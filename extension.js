@@ -36,7 +36,11 @@ function activate(context) {
 
   // Update preview on code change.
   vscode.workspace.onDidChangeTextDocument((eventArgs) => {
-    if (eventArgs.document.languageId == "abc") {
+    const language = eventArgs.document.languageId
+    //console.log(language)
+    // plaintext is for unsaved files.
+
+    if (language === 'abc' || language === 'plaintext') {
       //   let html = getWebviewContent(getNormalizedEditorContent(vscode.window.activeTextEditor),
       //     context.extensionPath
       //   );
@@ -85,18 +89,23 @@ function getHtml(editorContent) {
 		  <div id="paper"></div>
 		  <script src="https://gitcdn.link/repo/paulrosen/abcjs/main/bin/abcjs_basic_6.0.0-beta.27-min.js"></script>
 		  <script>
-		  	  const vscode = acquireVsCodeApi();
+		  	const vscode = acquireVsCodeApi();
+        console.log('api:', vscode)
 		  
-		      document.addEventListener("DOMContentLoaded", function (event) {
-			  console.log('document loaded. abc:', ABCJS);
+		    document.addEventListener("DOMContentLoaded", function (event) {
+			    //console.log('document loaded. abc:', ABCJS);
   
-			  var paper = document.getElementById('paper');
-			  ABCJS.renderAbc('paper', \`${editorContent}\`,  {
-				  responsive: "resize"
-			  });
+          var paper = document.getElementById('paper');
+          ABCJS.renderAbc('paper', \`${editorContent}\`,  {
+            responsive: "resize",
+            clickListener: function(abcElem, tuneNumber, classes) {
+              console.log(abcElem, tuneNumber, classes);
+            },
+          });
 		  });
 		  </script>
-		  </body></html>`;
+		  </body>
+      </html>`;
 
   return html;
 }
