@@ -41,10 +41,6 @@ This extension contributes the following settings:
 
 The line-endings in the file need to be set to LF instead of CRLF (on Windows). Then the offsets will match between the sheet and the abc code.
 
-## Publishing
-
-Published with `vsce publish`.
-
 ## Release Notes
 
 Significant changes
