@@ -72,3 +72,7 @@ Added features X, Y, and Z.
 
 - https://github.com/softawaregmbh/vscode-abc/
 
+Instructions:
+
+- [Syntax](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
+
