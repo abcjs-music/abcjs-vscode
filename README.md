@@ -13,6 +13,11 @@ Clicking the note on the displayed sheet will select it in the editor.
 
 TODO: Add images.
 
+## Usage
+
+The only action available currently is "abcjs-vscode.showPreview".
+Press Ctrl+Shift+P and type "abcjs" to access it.
+
 ## Requirements
 
 The abcjs library is currently loaded from CDN and not packaged with the extension.
@@ -44,13 +49,11 @@ Published with `vsce publish`.
 
 Significant changes
 
-### 0.0.1
+### 0.0.x
 
+Prototyping!
 Initial release of abcjs-vscode.
 Code coloring and sheet rendering from the text in the editor.
-
-### 0.0.2
-
 It is possible to select the notes by clicking the sheet.
 
 -----------------------------------------------------------------------------------------------------------
