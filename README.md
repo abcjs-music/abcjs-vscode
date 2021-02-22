@@ -29,7 +29,7 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+The line-endings in the file need to be set to LF instead of CRLF (on Windows). Then the offsets will match between the sheet and the abc code.
 
 ## Publishing
 
@@ -58,6 +58,7 @@ Documentation:
 - Editor
   - [Custom Editor](https://code.visualstudio.com/api/extension-guides/custom-editors)
   - [Editing sample](https://github.com/microsoft/vscode-extension-samples/blob/master/document-editing-sample/src/extension.ts#L8-L20)
+  - [Show Offset extension](https://github.com/ramya-rao-a/show-offset/blob/master/src/extension.ts)
 - [Text Document Show Options](https://code.visualstudio.com/api/references/vscode-api#TextDocumentShowOptions)
 - [Syntax](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
 - [Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)

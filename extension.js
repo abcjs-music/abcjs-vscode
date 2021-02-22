@@ -35,9 +35,10 @@ function activate(context) {
   context.subscriptions.push(viewer);
 
   // Update preview on code change.
-  vscode.workspace.onDidChangeTextDocument((eventArgs) =>
+  vscode.workspace.onDidChangeTextDocument((eventArgs) => {
+    console.log('changed', eventArgs);
     updatePreview(eventArgs)
-  );
+  });
 }
 
 function updatePreview(eventArgs) {
@@ -45,7 +46,10 @@ function updatePreview(eventArgs) {
   //console.log(language)
   // plaintext is for unsaved files.
 
-  if (language !== "abc" && language !== "plaintext") return;
+  if (language !== "abc" && language !== "plaintext") {
+    console.log('language is', language)
+    return
+  }
 
   //   let html = getWebviewContent(getNormalizedEditorContent(vscode.window.activeTextEditor),
   //     context.extensionPath
@@ -163,6 +167,7 @@ function showPreview(context, outputChannel) {
       select(message.startChar, message.endChar);
     } catch (error) {
       console.error(error);
+      vscode.window.showErrorMessage(error);
     }
   });
 }
@@ -180,8 +185,8 @@ function select(start, end) {
   }
 
   //editor.document.offsetAt()
-  const startPos = editor.document.positionAt(start + 1);
-  const endPos = editor.document.positionAt(end + 1);
+  const startPos = editor.document.positionAt(start);
+  const endPos = editor.document.positionAt(end);
   //console.log('positions:', startPos, endPos)
 
   // vscode.commands.executeCommand("cursorMove", {
