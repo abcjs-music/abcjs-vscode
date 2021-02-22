@@ -3,6 +3,7 @@
   "displayName": "abcjs vscode",
   "description": "Abc music notation editor with abcjs",
   "version": "0.0.1",
+  "publisher": "alensiljak",
   "author": {
 	  "name": "Alen Šiljak"
   },
