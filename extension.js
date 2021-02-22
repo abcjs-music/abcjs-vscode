@@ -100,7 +100,14 @@ function getHtml(editorContent) {
             responsive: "resize",
             clickListener: function(abcElem, tuneNumber, classes) {
               console.log(abcElem, tuneNumber, classes);
-            },
+              vscode.postMessage({
+                //abcElem: abcElem,
+                startChar: abcElem.startChar,
+                endChar: abcElem.endChar,
+                tuneNumber: tuneNumber,
+                classes: classes
+              });
+            }
           });
 		  });
 		  </script>
