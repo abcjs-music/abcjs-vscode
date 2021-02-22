@@ -82,28 +82,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-abcjs@5.10.3:
-  version "5.10.3"
-  resolved "https://registry.yarnpkg.com/abcjs/-/abcjs-5.10.3.tgz#294702140ec1caa292859ba9d2af0452f7e9e046"
-  integrity sha512-YGmW4CUWd7T2/HqZa/SQOTE+lXg7Z68HwwpJhHJBvdHqLi1uLCiYva1ZRGhB/MPyl1QKqJMfF+LQ1jGAEK69XQ==
-  dependencies:
-    midi "https://github.com/paulrosen/MIDI.js.git#abcjs"
-
-abcjs@5.11.0:
-  version "5.11.0"
-  resolved "https://registry.yarnpkg.com/abcjs/-/abcjs-5.11.0.tgz#397592ea6a56948aee64a8364f9a7a589e254300"
-  integrity sha512-kLehHwwttcTCVhKQaDkmqYbWBLAWmfyzYSbUQoEDAOTOX5RzDGakX8tXpzlsNHw6Lh8W8odZw44e0siwbG4TKA==
-  dependencies:
-    abcjs "5.10.3"
-    midi "https://github.com/paulrosen/MIDI.js.git#abcjs"
-
-abcjs@5.12.0:
-  version "5.12.0"
-  resolved "https://registry.yarnpkg.com/abcjs/-/abcjs-5.12.0.tgz#06fec076d570821309b0a12598cd356cd589eb08"
-  integrity sha512-pvi7SjOAKT7cRyRtywUSwYB0SNtRHKLxZUZ9Oc4E+nvpBHr8Z2/M9Pfyv3oIaiEpxlWTFK+B/H5t/DckiNFgpg==
-  dependencies:
-    abcjs "5.11.0"
-    midi "https://github.com/paulrosen/MIDI.js.git#abcjs"
+abcjs@6.0.0-beta.27:
+  version "6.0.0-beta.27"
+  resolved "https://registry.yarnpkg.com/abcjs/-/abcjs-6.0.0-beta.27.tgz#2568bd1a90d44356ebd4e32606d896480b968411"
+  integrity sha512-2gESPkWl4raNqXxDJVJJzcM3yaNXGC7vSlfwLTpulnDn0DPLaOhH/KFV2iXrX9tRhLefki3BfUKfEZ0D4AgB/w==
 
 acorn-jsx@^5.3.1:
   version "5.3.1"
@@ -835,10 +817,6 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
-
-"midi@git+https://github.com/paulrosen/MIDI.js.git#abcjs":
-  version "0.4.2"
-  resolved "git+https://github.com/paulrosen/MIDI.js.git#e593ffef81a0350f99448e3ab8111957145ff6b2"
 
 minimatch@3.0.4, minimatch@^3.0.4:
   version "3.0.4"

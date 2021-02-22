@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-const abcjs = require('abcjs');
+let abcjs = require('abcjs');
 //import abcjs from 'abcjs'
 
 let panel = null
@@ -50,7 +50,7 @@ function showPreview(context, outputChannel) {
 	// panel.webview.html = getWebviewContent(
 	// 	getNormalizedEditorContent(vscode.window.activeTextEditor), context.extensionPath);
 	panel.webview.html = "<html><body>Hello</body></html>"
-	//console.log(abcjs)
+	console.log(abcjs)
 
 	// handle messages from the webview
 	// panel.webview.onDidReceiveMessage(message => {
