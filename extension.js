@@ -3,6 +3,8 @@
 const vscode = require('vscode');
 let abcjs = require('abcjs');
 //import abcjs from 'abcjs'
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 let panel = null
 
@@ -34,14 +36,14 @@ function activate(context) {
 	
 	// Show the viewer
 	let viewer = vscode.commands.registerCommand('abcjs-editor.showPreview', 
-		() => showPreview(context, outputChannel));
+		async () => await showPreview(context, outputChannel));
 	context.subscriptions.push(viewer);
 }
 
 /**
  * open the preview window to the side.
  */
-function showPreview(context, outputChannel) {
+async function showPreview(context, outputChannel) {
 	//vscode.window.showInformationMessage('Opening the preview in abcjs editor!');
 	panel = vscode.window.createWebviewPanel('musicSheet', 'Music Sheet', vscode.ViewColumn.Beside, {
 		enableScripts: true
@@ -49,8 +51,28 @@ function showPreview(context, outputChannel) {
 
 	// panel.webview.html = getWebviewContent(
 	// 	getNormalizedEditorContent(vscode.window.activeTextEditor), context.extensionPath);
-	panel.webview.html = "<html><body>Hello</body></html>"
-	console.log(abcjs)
+	const dom = new JSDOM(`<!DOCTYPE html><html><body>
+		<div id="paper"></div>
+	</body></html>`);
+	console.log(dom.window.document.querySelector("p").textContent); // "Hello world"
+
+	var abc = `X: 1
+	T: Cooley's
+	M: 4/4
+	L: 1/8
+	K: Emin
+	|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
+	EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
+	|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
+	eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|`
+	try {
+	const abcObject = await abcjs.renderAbc("paper", abc)
+	console.log(abcObject)
+	} catch(error) {
+		console.error(error)
+	}
+
+	panel.webview.html = ""
 
 	// handle messages from the webview
 	// panel.webview.onDidReceiveMessage(message => {
