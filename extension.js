@@ -1,10 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
-let abcjs = require("abcjs");
-//import abcjs from 'abcjs'
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
 
 let panel = null;
 
@@ -45,6 +41,20 @@ function activate(context) {
   );
   context.subscriptions.push(viewer);
 
+  // show errors and refresh preview whenever the text changes
+  vscode.workspace.onDidChangeTextDocument((eventArgs) => {
+    if (eventArgs.document.languageId == "abc") {
+      //   let html = getWebviewContent(getNormalizedEditorContent(vscode.window.activeTextEditor),
+      //     context.extensionPath
+      //   );
+      const html = getHtml();
+
+      if (panel != null) {
+        panel.webview.html = html;
+      }
+    }
+  });
+
   // Web View preview
   // https://github.com/microsoft/vscode-extension-samples/blob/master/webview-view-sample/src/extension.ts
   //   const provider = new AbcjsPreviewProvider(context.extensionUri);
@@ -63,6 +73,42 @@ function activate(context) {
   //   );
 }
 
+function getHtml() {
+  var abc = `X: 1
+	T: Cooley's
+	M: 4/4
+	L: 1/8
+	K: Emin
+	|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
+	EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
+	|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
+	eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|`;
+  const shortAbc = "F2 c2";
+
+  const html = `<!DOCTYPE html><html>
+	  <head>
+		  <meta charset="UTF-8">
+		  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  </head>
+		<body>
+		  <h1>Preview</h1>
+		  <div id="paper"></div>
+		  <script src="https://gitcdn.link/repo/paulrosen/abcjs/main/bin/abcjs_basic_6.0.0-beta.27-min.js"></script>
+		  <script>
+		  document.addEventListener("DOMContentLoaded", function (event) {
+			  console.log('document loaded. abc:', ABCJS);
+  
+			  var paper = document.getElementById('paper');
+			  ABCJS.renderAbc('paper', '${shortAbc}',  {
+				  responsive: "resize"
+			  });
+		  });
+		  </script>
+		  </body></html>`;
+
+  return html;
+}
+
 /**
  * open the preview window to the side.
  */
@@ -71,75 +117,13 @@ function showPreview(context, outputChannel) {
 
   //vscode.window.showInformationMessage('Opening the preview in abcjs editor!');
   panel = vscode.window.createWebviewPanel(
-    "musicSheet",
-    "Music Sheet",
+    "abcjsPreview",
+    "abcjs preview",
     vscode.ViewColumn.Beside,
     {
       enableScripts: true,
     }
   );
-
-  var abc = `X: 1
-  T: Cooley's
-  M: 4/4
-  L: 1/8
-  K: Emin
-  |:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
-  EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
-  |:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
-  eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|`;
-
-  // panel.webview.html = getWebviewContent(
-  // 	getNormalizedEditorContent(vscode.window.activeTextEditor), context.extensionPath);
-  //const dom = new JSDOM(`<!DOCTYPE html><html><body>
-  const html = `<!DOCTYPE html><html><body>
-		<h1>Preview</h1>
-		<div id="paper"></div>
-		<script src="https://gitcdn.link/repo/paulrosen/abcjs/main/bin/abcjs_basic_6.0.0-beta.27-min.js"></script>
-		<script>
-		document.addEventListener("DOMContentLoaded", function (event) {
-			console.log('document loaded. abc:', ABCJS);
-
-			var paper = document.getElementById('paper');
-			ABCJS.renderAbc('paper', 'F2 c2');
-		});
-		</script>
-		</body></html>`;
-
-  const html1 = `<!DOCTYPE html><html><body>
-		<div id="paper"></div>
-		<script src="https://gitcdn.link/repo/paulrosen/abcjs/main/bin/abcjs_basic_6.0.0-beta.27-min.js"></script>
-		<script>
-		document.addEventListener("DOMContentLoaded", function (event) {
-			//ABCJS.renderAbc("paper", tune);
-	
-			var paper = document.getElementById('paper');
-			console.log('do we have a paper?', paper)
-			if (!paper) {
-				// Editor
-	
-				new ABCJS.Editor('abc', {
-					canvas_id: 'paper',
-					warnings_id: 'warnings',
-					abcjsParams: {
-						responsive: "resize"
-					}
-				});
-			}
-			if (paper) {
-				abcjs.renderAbc("paper", '${abc}');
-			}
-		});
-	</script>
-		</body></html>`;
-  //console.log(dom.window.document.querySelector("p").textContent); // "Hello world"
-
-  //   try {
-  //     const abcObject = await abcjs.renderAbc("paper", abc);
-  //     console.log(abcObject);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
 
   panel.webview.html = html;
 
