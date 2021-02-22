@@ -54,6 +54,10 @@ Code coloring and sheet rendering from the text in the editor.
 Documentation:
 
 - [vscode API](https://code.visualstudio.com/api)
+- [Samples](https://github.com/Microsoft/vscode-extension-samples)
+- Editor
+  - [Custom Editor](https://code.visualstudio.com/api/extension-guides/custom-editors)
+  - [Editing sample](https://github.com/microsoft/vscode-extension-samples/blob/master/document-editing-sample/src/extension.ts#L8-L20)
 - [Text Document Show Options](https://code.visualstudio.com/api/references/vscode-api#TextDocumentShowOptions)
 - [Syntax](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
 - [Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)

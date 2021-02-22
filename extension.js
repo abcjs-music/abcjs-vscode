@@ -35,25 +35,29 @@ function activate(context) {
   context.subscriptions.push(viewer);
 
   // Update preview on code change.
-  vscode.workspace.onDidChangeTextDocument((eventArgs) => {
-    const language = eventArgs.document.languageId
-    //console.log(language)
-    // plaintext is for unsaved files.
+  vscode.workspace.onDidChangeTextDocument((eventArgs) =>
+    updatePreview(eventArgs)
+  );
+}
 
-    if (language === 'abc' || language === 'plaintext') {
-      //   let html = getWebviewContent(getNormalizedEditorContent(vscode.window.activeTextEditor),
-      //     context.extensionPath
-      //   );
-      const editorContent = getNormalizedEditorContent(
-        vscode.window.activeTextEditor
-      );
-      const html = getHtml(editorContent);
+function updatePreview(eventArgs) {
+  const language = eventArgs.document.languageId;
+  //console.log(language)
+  // plaintext is for unsaved files.
 
-      if (panel != null) {
-        panel.webview.html = html;
-      }
-    }
-  });
+  if (language !== "abc" && language !== "plaintext") return;
+
+  //   let html = getWebviewContent(getNormalizedEditorContent(vscode.window.activeTextEditor),
+  //     context.extensionPath
+  //   );
+  const editorContent = getNormalizedEditorContent(
+    vscode.window.activeTextEditor
+  );
+  const html = getHtml(editorContent);
+
+  if (panel != null) {
+    panel.webview.html = html;
+  }
 }
 
 function registerWebViewProvider() {
@@ -99,7 +103,8 @@ function getHtml(editorContent) {
           ABCJS.renderAbc('paper', \`${editorContent}\`,  {
             responsive: "resize",
             clickListener: function(abcElem, tuneNumber, classes) {
-              console.log(abcElem, tuneNumber, classes);
+              console.log('clicked:', abcElem, tuneNumber, classes);
+
               vscode.postMessage({
                 //abcElem: abcElem,
                 startChar: abcElem.startChar,
@@ -151,7 +156,43 @@ function showPreview(context, outputChannel) {
   // }, undefined, context.subscriptions);
   panel.webview.onDidReceiveMessage((message) => {
     console.log(message);
+    // Receiving only the element-selection messages at the moment.
+    // Select the character in the editor.
+
+    try {
+      select(message.startChar, message.endChar);
+    } catch (error) {
+      console.error(error);
+    }
   });
+}
+
+/**
+ * Select the code in the editor between the given locations. Used on sheet click.
+ * @param {Number} start
+ * @param {Number} end
+ */
+function select(start, end) {
+  let editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    // Take the first visible one?!
+    editor = vscode.window.visibleTextEditors[0];
+  }
+
+  //editor.document.offsetAt()
+  const startPos = editor.document.positionAt(start + 1);
+  const endPos = editor.document.positionAt(end + 1);
+  //console.log('positions:', startPos, endPos)
+
+  // vscode.commands.executeCommand("cursorMove", {
+  //   to: "down",
+  //   by: "wrappedLine",
+  //   select: true,
+  //   value: 1
+  // });
+
+  editor.selection = new vscode.Selection(startPos, endPos);
+  editor.revealRange(editor.selection);
 }
 
 function getNormalizedEditorContent(editor) {
@@ -159,9 +200,10 @@ function getNormalizedEditorContent(editor) {
     return "";
   }
 
-  let content = editor?.document.getText();
+  //let content = editor?.document.getText();
+  let content = editor.document.getText();
 
-  if (editor?.document.eol == vscode.EndOfLine.CRLF) {
+  if (editor.document.eol == vscode.EndOfLine.CRLF) {
     content = content.replace(/\r\n/g, "\n");
   }
 
@@ -172,14 +214,14 @@ function getNormalizedEditorContent(editor) {
 function deactivate() {}
 
 class AbcjsPreviewProvider {
+  // static viewType = "abcjs-vscode.abcView";
+
   constructor(extensionUri) {
     this._view = null;
     this._extensionUri = extensionUri;
 
     console.log("extension uri:", extensionUri);
   }
-
-  static viewType = "abcjs-vscode.abcView";
 
   resolveWebviewView(webviewView, context, _token) {
     this._view = webviewView;
@@ -196,7 +238,7 @@ class AbcjsPreviewProvider {
     webviewView.webview.onDidReceiveMessage((data) => {
       switch (data.type) {
         case "colorSelected": {
-          vscode.window.activeTextEditor?.insertSnippet(
+          vscode.window.activeTextEditor.insertSnippet(
             new vscode.SnippetString(`#${data.value}`)
           );
           break;
