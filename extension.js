@@ -36,34 +36,39 @@ function activate(context) {
 
   // abcjs preview
 
-  //const outputChannel = vscode.window.createOutputChannel('abcjs-vscode errors');
+  const outputChannel = vscode.window.createOutputChannel(
+    "abcjs-vscode errors"
+  );
   // Show the viewer
-  // let viewer = vscode.commands.registerCommand('abcjs-vscode.showPreview',
-  // 	async () => await showPreview(context, outputChannel));
-  // context.subscriptions.push(viewer);
+  let viewer = vscode.commands.registerCommand("abcjs-vscode.showPreview", () =>
+    showPreview(context, outputChannel)
+  );
+  context.subscriptions.push(viewer);
 
   // Web View preview
   // https://github.com/microsoft/vscode-extension-samples/blob/master/webview-view-sample/src/extension.ts
-  const provider = new AbcjsPreviewProvider(context.extensionUri);
+  //   const provider = new AbcjsPreviewProvider(context.extensionUri);
 
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      AbcjsPreviewProvider.viewType,
-      provider
-    )
-  );
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "abcjs-vscode.showPreview",
-      provider.renderAbc
-    )
-  );
+  //   context.subscriptions.push(
+  //     vscode.window.registerWebviewViewProvider(
+  //       AbcjsPreviewProvider.viewType,
+  //       provider
+  //     )
+  //   );
+  //   context.subscriptions.push(
+  //     vscode.commands.registerCommand(
+  //       "abcjs-vscode.showPreview",
+  //       provider.renderAbc
+  //     )
+  //   );
 }
 
 /**
  * open the preview window to the side.
  */
-async function showPreview(context, outputChannel) {
+function showPreview(context, outputChannel) {
+  console.log("registering the viewer");
+
   //vscode.window.showInformationMessage('Opening the preview in abcjs editor!');
   panel = vscode.window.createWebviewPanel(
     "musicSheet",
@@ -74,30 +79,69 @@ async function showPreview(context, outputChannel) {
     }
   );
 
+  var abc = `X: 1
+  T: Cooley's
+  M: 4/4
+  L: 1/8
+  K: Emin
+  |:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
+  EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
+  |:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
+  eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|`;
+
   // panel.webview.html = getWebviewContent(
   // 	getNormalizedEditorContent(vscode.window.activeTextEditor), context.extensionPath);
-  const dom = new JSDOM(`<!DOCTYPE html><html><body>
+  //const dom = new JSDOM(`<!DOCTYPE html><html><body>
+  const html = `<!DOCTYPE html><html><body>
+		<h1>Preview</h1>
 		<div id="paper"></div>
-	</body></html>`);
-  console.log(dom.window.document.querySelector("p").textContent); // "Hello world"
+		<script src="https://gitcdn.link/repo/paulrosen/abcjs/main/bin/abcjs_basic_6.0.0-beta.27-min.js"></script>
+		<script>
+		document.addEventListener("DOMContentLoaded", function (event) {
+			console.log('document loaded. abc:', ABCJS);
 
-  var abc = `X: 1
-	T: Cooley's
-	M: 4/4
-	L: 1/8
-	K: Emin
-	|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
-	EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
-	|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
-	eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|`;
-  try {
-    const abcObject = await abcjs.renderAbc("paper", abc);
-    console.log(abcObject);
-  } catch (error) {
-    console.error(error);
-  }
+			var paper = document.getElementById('paper');
+			ABCJS.renderAbc('paper', 'F2 c2');
+		});
+		</script>
+		</body></html>`;
 
-  panel.webview.html = "";
+  const html1 = `<!DOCTYPE html><html><body>
+		<div id="paper"></div>
+		<script src="https://gitcdn.link/repo/paulrosen/abcjs/main/bin/abcjs_basic_6.0.0-beta.27-min.js"></script>
+		<script>
+		document.addEventListener("DOMContentLoaded", function (event) {
+			//ABCJS.renderAbc("paper", tune);
+	
+			var paper = document.getElementById('paper');
+			console.log('do we have a paper?', paper)
+			if (!paper) {
+				// Editor
+	
+				new ABCJS.Editor('abc', {
+					canvas_id: 'paper',
+					warnings_id: 'warnings',
+					abcjsParams: {
+						responsive: "resize"
+					}
+				});
+			}
+			if (paper) {
+				abcjs.renderAbc("paper", '${abc}');
+			}
+		});
+	</script>
+		</body></html>`;
+  //console.log(dom.window.document.querySelector("p").textContent); // "Hello world"
+
+  //   try {
+  //     const abcObject = await abcjs.renderAbc("paper", abc);
+  //     console.log(abcObject);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+
+  panel.webview.html = html;
 
   // handle messages from the webview
   // panel.webview.onDidReceiveMessage(message => {
