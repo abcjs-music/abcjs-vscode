@@ -1,8 +1,10 @@
-# abcjs-editor README
+# abcjs-vscode
 
-This is the README for your extension "abcjs-editor". After writing up a brief description, we recommend including the following sections.
+This is the Abc music notation preview extension using abcjs library.
 
 ## Features
+
+The extension displays the music sheet based on the Abc notation in the current editor.
 
 Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
 
@@ -10,11 +12,9 @@ For example if there is an image subfolder under your extension project workspac
 
 \!\[feature X\]\(images/feature-x.png\)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+The abcjs library is currently loaded from CDN. 
 
 ## Extension Settings
 
@@ -63,3 +63,8 @@ Added features X, Y, and Z.
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
+
+## References
+
+- https://github.com/softawaregmbh/vscode-abc/
+
