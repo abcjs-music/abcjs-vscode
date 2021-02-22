@@ -12,16 +12,16 @@ function activate(context) {
 
   // The command has been defined in the package.json file
   // The commandId parameter must match the command field in package.json
-//   let disposable = vscode.commands.registerCommand(
-//     "abcjs-editor.helloWorld",
-//     function () {
-//       // The code you place here will be executed every time your command is executed
+  //   let disposable = vscode.commands.registerCommand(
+  //     "abcjs-editor.helloWorld",
+  //     function () {
+  //       // The code you place here will be executed every time your command is executed
 
-//       // Display a message box to the user
-//       vscode.window.showInformationMessage("Hello World from abcjs editor!");
-//     }
-//   );
-//   context.subscriptions.push(disposable);
+  //       // Display a message box to the user
+  //       vscode.window.showInformationMessage("Hello World from abcjs editor!");
+  //     }
+  //   );
+  //   context.subscriptions.push(disposable);
 
   // abcjs preview
 
@@ -40,7 +40,9 @@ function activate(context) {
       //   let html = getWebviewContent(getNormalizedEditorContent(vscode.window.activeTextEditor),
       //     context.extensionPath
       //   );
-	  const editorContent = getNormalizedEditorContent(vscode.window.activeTextEditor)
+      const editorContent = getNormalizedEditorContent(
+        vscode.window.activeTextEditor
+      );
       const html = getHtml(editorContent);
 
       if (panel != null) {
@@ -48,14 +50,12 @@ function activate(context) {
       }
     }
   });
-
 }
 
 function registerWebViewProvider() {
-	  // Web View preview
+  // Web View preview
   // https://github.com/microsoft/vscode-extension-samples/blob/master/webview-view-sample/src/extension.ts
   //   const provider = new AbcjsPreviewProvider(context.extensionUri);
-
   //   context.subscriptions.push(
   //     vscode.window.registerWebviewViewProvider(
   //       AbcjsPreviewProvider.viewType,
@@ -68,12 +68,11 @@ function registerWebViewProvider() {
   //       provider.renderAbc
   //     )
   //   );
-
 }
 
 /**
  * Generate the Preview HTML.
- * @param {String} editorContent 
+ * @param {String} editorContent
  */
 function getHtml(editorContent) {
   const html = `<!DOCTYPE html><html>
@@ -118,7 +117,11 @@ function showPreview(context, outputChannel) {
     }
   );
 
-  const html = getHtml()
+  const editorContent = getNormalizedEditorContent(
+    vscode.window.activeTextEditor
+  );
+
+  const html = getHtml(editorContent);
 
   panel.webview.html = html;
 
@@ -136,17 +139,17 @@ function showPreview(context, outputChannel) {
 }
 
 function getNormalizedEditorContent(editor) {
-	if (editor == null) {
-		return "";
-	}
+  if (editor == null) {
+    return "";
+  }
 
-	let content = editor?.document.getText();
+  let content = editor?.document.getText();
 
-	if (editor?.document.eol == vscode.EndOfLine.CRLF) {
-		content = content.replace(/\r\n/g, "\n");
-	}
+  if (editor?.document.eol == vscode.EndOfLine.CRLF) {
+    content = content.replace(/\r\n/g, "\n");
+  }
 
-	return content;
+  return content;
 }
 
 // this method is called when your extension is deactivated

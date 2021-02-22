@@ -51,8 +51,9 @@ Code coloring and sheet rendering from the text in the editor.
 
 - https://github.com/softawaregmbh/vscode-abc/
 
-Instructions:
+Documentation:
 
+- [vscode API](https://code.visualstudio.com/api)
 - [Syntax](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
 - [Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 
