@@ -75,15 +75,16 @@ function activate(context) {
 
 function getHtml() {
   var abc = `X: 1
-	T: Cooley's
-	M: 4/4
-	L: 1/8
-	K: Emin
-	|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
-	EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
-	|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
-	eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|`;
-  const shortAbc = "F2 c2";
+T: Cooley's
+M: 4/4
+L: 1/8
+K: Emin
+|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|
+EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|
+|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|
+eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|`
+  
+	const shortAbc = "F2 c2";
 
   const html = `<!DOCTYPE html><html>
 	  <head>
@@ -99,7 +100,7 @@ function getHtml() {
 			  console.log('document loaded. abc:', ABCJS);
   
 			  var paper = document.getElementById('paper');
-			  ABCJS.renderAbc('paper', '${shortAbc}',  {
+			  ABCJS.renderAbc('paper', \`${abc}\`,  {
 				  responsive: "resize"
 			  });
 		  });
@@ -124,6 +125,8 @@ function showPreview(context, outputChannel) {
       enableScripts: true,
     }
   );
+
+  const html = getHtml()
 
   panel.webview.html = html;
 
