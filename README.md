@@ -11,7 +11,7 @@ Currently ALPHA state but functional, nonetheless. It will *NOT* destroy anythin
 The extension displays the music sheet based on the Abc notation in the current editor.
 Clicking the note on the displayed sheet will select it in the editor.
 
-![Screenshot 1](res/Screenshot%201.png)
+![Screenshot 1](res/Screenshot-1.png)
 
 ## Usage
 
