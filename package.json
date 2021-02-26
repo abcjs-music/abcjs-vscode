@@ -2,13 +2,15 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "Abc music notation editor with abcjs",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "publisher": "alensiljak",
   "author": {
-	  "name": "Alen Šiljak"
+    "name": "Alen Šiljak"
   },
+  "license": "GPL-3.0-or-later",
+  "icon": "res/icon128.png",
   "repository": {
-	  "url": "https://gitlab.com/alensiljak/abcjs-vscode"
+    "url": "https://gitlab.com/alensiljak/abcjs-vscode"
   },
   "engines": {
     "vscode": "^1.53.0"
@@ -18,7 +20,7 @@
   ],
   "activationEvents": [
     "onCommand:abcjs-vscode.helloWorld",
-	"onCommand:abcjs-vscode.showPreview"
+    "onCommand:abcjs-vscode.showPreview"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -27,29 +29,29 @@
         "command": "abcjs-vscode.helloWorld",
         "title": "Hello World"
       },
-	  {
-		  "command": "abcjs-vscode.showPreview",
-		  "title": "abcjs-vscode: Show Preview"
-	  }
+      {
+        "command": "abcjs-vscode.showPreview",
+        "title": "abcjs-vscode: Show Preview"
+      }
     ],
-	"languages": [
-		{
-			"id": "abc",
-			"aliases": [
-				"ABC"
-			],
-			"extensions": [
-				".abc"
-			]
-		}
-	],
-	"grammars": [
-		{
-			"language": "abc",
-			"scopeName": "source.abc",
-			"path": "./abc.tmGrammar.json"
-		}
-	]
+    "languages": [
+      {
+        "id": "abc",
+        "aliases": [
+          "ABC"
+        ],
+        "extensions": [
+          ".abc"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "abc",
+        "scopeName": "source.abc",
+        "path": "./abc.tmGrammar.json"
+      }
+    ]
   },
   "scripts": {
     "lint": "eslint .",
