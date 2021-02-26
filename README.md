@@ -11,11 +11,11 @@ Currently ALPHA state but functional, nonetheless. It will *NOT* destroy anythin
 The extension displays the music sheet based on the Abc notation in the current editor.
 Clicking the note on the displayed sheet will select it in the editor.
 
-TODO: Add images.
+![Screenshot 1](res/Screenshot%201.png)
 
 ## Usage
 
-The only action available currently is "abcjs-vscode.showPreview".
+The only action available currently is "abcjs-vscode: Show Preview".
 Press Ctrl+Shift+P and type "abcjs" to access it.
 
 ## Requirements
@@ -52,7 +52,7 @@ Initial release of abcjs-vscode.
 Code coloring and sheet rendering from the text in the editor.
 It is possible to select the notes by clicking the sheet.
 
------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
 
 
 
