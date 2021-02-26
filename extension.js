@@ -28,13 +28,13 @@ function activate(context) {
   const outputChannel = vscode.window.createOutputChannel(
     "abcjs-vscode errors"
   );
-  // Show the viewer
+  // Register the command to Show the Viewer.
   let viewer = vscode.commands.registerCommand("abcjs-vscode.showPreview", () =>
     showPreview(context, outputChannel)
   );
   context.subscriptions.push(viewer);
 
-  // Update preview on code change.
+  // Update the Preview when code changes.
   vscode.workspace.onDidChangeTextDocument((eventArgs) => {
     console.log('changed', eventArgs);
     updatePreview(eventArgs)
@@ -207,6 +207,9 @@ function getNormalizedEditorContent(editor) {
 
   //let content = editor?.document.getText();
   let content = editor.document.getText();
+
+  // escape the \
+  content = content.replaceAll('\\', '\\\\')
 
   if (editor.document.eol == vscode.EndOfLine.CRLF) {
     content = content.replace(/\r\n/g, "\n");
