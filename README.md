@@ -47,6 +47,10 @@ The line-endings in the file need to be set to LF instead of CRLF (on Windows). 
 
 Significant changes
 
+### 0.2.0
+
+Updating the abcjs to v6.0.0-beta.28.
+
 ### 0.0.x
 
 Prototyping!
