@@ -13,7 +13,7 @@ Clicking the note on the displayed sheet will select it in the editor.
 
 ![Screenshot 1](https://imgur.com/v5y0qVB.png)
 
-![Screenshot 2](https://imgur.com/HMILUbe)
+![Screenshot 2](https://imgur.com/HMILUbe.png)
 
 ## Usage
 
