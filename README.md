@@ -6,14 +6,14 @@ ABC notation is the "Markdown for music". Learn more at https://abcnotation.com/
 
 Available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=alensiljak.abcjs-vscode) or through the Extensions panel in VS Code.
 
-Currently ALPHA state but functional, nonetheless. It will *NOT* destroy anything. Quite the contrary, it may already be useful enough.
-
 ## Features
 
 The extension displays the music sheet based on the Abc notation in the current editor.
 Clicking the note on the displayed sheet will select it in the editor.
 
 ![Screenshot 1](https://imgur.com/v5y0qVB.png)
+
+![Screenshot 2](https://imgur.com/HMILUbe)
 
 ## Usage
 
@@ -26,7 +26,7 @@ The abcjs library is currently loaded from CDN and not packaged with the extensi
 
 ## Extension Settings
 
-There are currently no settings for the extension. It works on blank new files and .abc files.
+There are currently no settings for the extension. It works on blank new files and existing .abc files.
 
 <!--
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
@@ -47,9 +47,9 @@ The line-endings in the file need to be set to LF instead of CRLF (on Windows). 
 
 Significant changes
 
-### 0.2.0
+### 0.2.x
 
-Updating the abcjs to v6.0.0-beta.28.
+Updating the abcjs to v6.0.0-beta.28. The text is now visible on dark background.
 
 ### 0.0.x
 
