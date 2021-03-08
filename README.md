@@ -45,18 +45,7 @@ The line-endings in the file need to be set to LF instead of CRLF (on Windows). 
 
 ## Release Notes
 
-Significant changes
-
-### 0.2.x
-
-Updating the abcjs to v6.0.0-beta.28. The text is now visible on dark background.
-
-### 0.0.x
-
-Prototyping!
-Initial release of abcjs-vscode.
-Code coloring and sheet rendering from the text in the editor.
-It is possible to select the notes by clicking the sheet.
+See [Changelog](CHANGELOG.md)
 
 --------------------------------------------------------------------------------------------------
 

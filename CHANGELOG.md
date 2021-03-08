@@ -4,6 +4,14 @@ All notable changes to the "abcjs-editor" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
 
-- Initial release
+### 0.2.x
+
+Updating the abcjs to v6.0.0-beta.28. The text is now visible on dark background.
+
+### 0.0.x
+
+Prototyping!
+Initial release of abcjs-vscode.
+Code coloring and sheet rendering from the text in the editor.
+It is possible to select the notes by clicking the sheet.
