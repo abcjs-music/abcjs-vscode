@@ -45,10 +45,9 @@ The line-endings in the file need to be set to LF instead of CRLF (on Windows). 
 
 ## Release Notes
 
-See [Changelog](CHANGELOG.md)
+See CHANGELOG.md.
 
 --------------------------------------------------------------------------------------------------
-
 
 
 ## References
