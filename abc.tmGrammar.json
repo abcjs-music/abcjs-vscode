@@ -57,6 +57,17 @@
                 }
             ]
         },
+        "part": {
+            "patterns": [                
+                {
+                    "match": "^(P:)(.*)",
+                    "captures": {
+                        "1": { "name": "keyword.other.part.abc" },
+                        "2": { "name": "string.value.part.abc" }
+                    }
+                }
+            ]
+        },
         "tempo": {
             "patterns": [                
                 {

@@ -1,15 +1,18 @@
-# Change Log
+* Change Log
 
 All notable changes to the "abcjs-editor" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+** 0.3.0
 
-### 0.2.x
+Recognizing Parts syntax.
+
+** 0.2.x
 
 Updating the abcjs to v6.0.0-beta.28. The text is now visible on dark background.
 
-### 0.0.x
+** 0.0.x
 
 Prototyping!
 Initial release of abcjs-vscode.
