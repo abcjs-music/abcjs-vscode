@@ -95,7 +95,7 @@ function getHtml(editorContent) {
 		<body>
 		  <h1>Preview</h1>
 		  <div id="paper"></div>
-		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.0.0-beta.31/dist/abcjs-basic-min.js"></script>
+		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.0.0-beta.32/dist/abcjs-basic-min.js"></script>
 		  <script>
 		  	const vscode = acquireVsCodeApi();
         console.log('api:', vscode)

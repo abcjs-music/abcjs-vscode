@@ -11,7 +11,11 @@ Available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/it
 The extension displays the music sheet based on the Abc notation in the current editor.
 Clicking the note on the displayed sheet will select it in the editor.
 
+Minimalistic tune
+
 ![Screenshot 1](https://imgur.com/v5y0qVB.png)
+
+And a bit more elaborate:
 
 ![Screenshot 2](https://imgur.com/HMILUbe.png)
 
