@@ -71,4 +71,5 @@ Documentation:
 - [Syntax](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
 - [Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 
+vsce publish
 -->
