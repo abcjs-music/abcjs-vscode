@@ -72,4 +72,5 @@ Documentation:
 - [Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 
 vsce publish
+Use a local version with ~yarn vsce publish~.
 -->
