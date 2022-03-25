@@ -73,4 +73,6 @@ Documentation:
 
 vsce publish
 Use a local version with ~yarn vsce publish~.
+
+Switched to npm as a package manager.
 -->
