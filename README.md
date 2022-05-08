@@ -53,6 +53,9 @@ See [[CHANGELOG.org]].
 
 --------------------------------------------------------------------------------------------------
 
+## Development
+
+The package manager is npm.
 
 ## References
 
