@@ -104,7 +104,15 @@ function getHtml(editorContent) {
 			    //console.log('document loaded. abc:', ABCJS);
   
           var paper = document.getElementById('paper');
-          ABCJS.renderAbc('paper', \`${editorContent}\`,  {
+          var abc = \`${editorContent}\`
+          var numTunes = ABCJS.numberOfTunes(abc)
+          var divs = []
+          for (var i = 0; i < numTunes; i++) {
+divs.push("<div></div>")
+          }
+          paper.innerHTML = divs
+          var papers = document.querySelectorAll("#paper div")
+          ABCJS.renderAbc(papers, abc,  {
             responsive: "resize",
             clickListener: function(abcElem, tuneNumber, classes) {
               console.log('clicked:', abcElem, tuneNumber, classes);
@@ -219,7 +227,7 @@ function getNormalizedEditorContent(editor) {
 }
 
 // this method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() { }
 
 class AbcjsPreviewProvider {
   // static viewType = "abcjs-vscode.abcView";
