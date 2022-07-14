@@ -94,39 +94,53 @@ function getHtml(editorContent) {
 	  </head>
 		<body>
 		  <h1>Preview</h1>
-		  <div id="paper"></div>
+      <label id="tune-selector">Select Tune: 
+        <select></select>
+      </label>
+      <div id="paper"></div>
 		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.0.2/dist/abcjs-basic-min.js"></script>
 		  <script>
 		  	const vscode = acquireVsCodeApi();
         console.log('api:', vscode)
-		  
-		    document.addEventListener("DOMContentLoaded", function (event) {
-			    //console.log('document loaded. abc:', ABCJS);
-  
-          var paper = document.getElementById('paper');
-          var abc = \`${editorContent}\`
-          var numTunes = ABCJS.numberOfTunes(abc)
-          var divs = []
-          for (var i = 0; i < numTunes; i++) {
-divs.push("<div></div>")
-          }
-          paper.innerHTML = divs
-          var papers = document.querySelectorAll("#paper div")
-          ABCJS.renderAbc(papers, abc,  {
-            responsive: "resize",
-            clickListener: function(abcElem, tuneNumber, classes) {
-              console.log('clicked:', abcElem, tuneNumber, classes);
 
-              vscode.postMessage({
-                //abcElem: abcElem,
-                startChar: abcElem.startChar,
-                endChar: abcElem.endChar,
-                tuneNumber: tuneNumber,
-                classes: classes
-              });
+        function clickListener(abcElem, tuneNumber, classes) {
+          vscode.postMessage({
+            //abcElem: abcElem,
+            startChar: abcElem.startChar,
+            endChar: abcElem.endChar,
+            tuneNumber: tuneNumber,
+            classes: classes
+          })
+        }
+
+		    document.addEventListener("DOMContentLoaded", function (event) {
+          var abc = \`${editorContent}\`
+          var tuneBook = new ABCJS.TuneBook(abc)
+          if (tuneBook.tunes.length >= 2) {
+            var select = document.querySelector("#tune-selector select")
+            select.innerHTML = ""
+            var option = document.createElement("option");
+            var optionContent = document.createTextNode("-- select tune --");
+            option.appendChild(optionContent);
+            select.appendChild(option)
+            for (var i = 0; i < tuneBook.tunes.length; i++) {
+              option = document.createElement("option");
+              optionContent = document.createTextNode(tuneBook.tunes[i].title);
+              option.appendChild(optionContent);
+              option.setAttribute('value', i)
+              select.appendChild(option)
             }
-          });
-		  });
+          } else {
+            document.getElementById("tune-selector").style.display = "none"
+            ABCJS.renderAbc("paper", abc, { responsive: "resize", clickListener: clickListener});
+          }
+          var setTune = function() {
+            var index = this.value
+            ABCJS.renderAbc("paper", abc, { responsive: "resize", startingTune: index, clickListener: clickListener});
+          }
+          select.addEventListener("change", setTune)
+  
+        });
 		  </script>
 		  </body>
       </html>`;
