@@ -41,6 +41,12 @@ function activate(context) {
   });
 }
 
+function getFileName() {
+  const path = vscode.window.activeTextEditor.document.fileName
+  const arr = path.split("/")
+  return arr[arr.length - 1]
+}
+
 function updatePreview(eventArgs) {
   const language = eventArgs.document.languageId;
   //console.log(language)
@@ -57,7 +63,7 @@ function updatePreview(eventArgs) {
   const editorContent = getNormalizedEditorContent(
     vscode.window.activeTextEditor
   );
-  const html = getHtml(editorContent);
+  const html = getHtml(editorContent, getFileName());
 
   if (panel != null) {
     panel.webview.html = html;
@@ -86,14 +92,14 @@ function registerWebViewProvider() {
  * Generate the Preview HTML.
  * @param {String} editorContent
  */
-function getHtml(editorContent) {
+function getHtml(editorContent, fileName) {
   const html = `<!DOCTYPE html><html>
 	  <head>
 		  <meta charset="UTF-8">
 		  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	  </head>
 		<body>
-		  <h1>Preview</h1>
+		  <h1 class="title">${fileName}</h1>
       <label id="tune-selector">Select Tune: 
         <select></select>
       </label>
@@ -168,7 +174,7 @@ function showPreview(context, outputChannel) {
     vscode.window.activeTextEditor
   );
 
-  const html = getHtml(editorContent);
+  const html = getHtml(editorContent, getFileName());
 
   panel.webview.html = html;
 
