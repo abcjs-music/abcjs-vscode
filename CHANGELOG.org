@@ -4,6 +4,10 @@ All notable changes to the "abcjs-editor" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+** 1.2.0
+
+Title taken from the filename. Multiple files support.
+
 ** 1.1.0
 
 Updated the abcjs to v6.0.2.
