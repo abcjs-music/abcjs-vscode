@@ -97,6 +97,18 @@ function getHtml(editorContent, fileName) {
 	  <head>
 		  <meta charset="UTF-8">
 		  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+      @import url(https://fonts.googleapis.com/css?family=Itim);
+
+      @font-face {
+        font-family: 'itim-music';
+        src:  	url('https://paulrosen.github.io/abcjs/fonts/itim-music.ttf') format('truetype'),
+                url('https://paulrosen.github.io/abcjs/fonts/itim-music.woff') format('woff'),
+                url('https://paulrosen.github.io/abcjs/fonts/itim-music.svg#icomoon') format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
 	  </head>
 		<body>
 		  <h1 class="title">${fileName}</h1>
@@ -120,6 +132,13 @@ function getHtml(editorContent, fileName) {
         }
 
 		    document.addEventListener("DOMContentLoaded", function (event) {
+          var options = {
+            responsive: "resize", 
+            clickListener: clickListener,
+            format: {
+              gchordfont: '"itim-music,Itim" 20'
+            }
+          }
           var abc = \`${editorContent}\`
           var tuneBook = new ABCJS.TuneBook(abc)
           if (tuneBook.tunes.length >= 2) {
@@ -138,14 +157,13 @@ function getHtml(editorContent, fileName) {
             }
           } else {
             document.getElementById("tune-selector").style.display = "none"
-            ABCJS.renderAbc("paper", abc, { responsive: "resize", clickListener: clickListener});
+            ABCJS.renderAbc("paper", abc, options);
           }
           var setTune = function() {
             var index = this.value
-            ABCJS.renderAbc("paper", abc, { responsive: "resize", startingTune: index, clickListener: clickListener});
+            ABCJS.renderAbc("paper", abc, Object.assign({}, options, { startingTune: index }));
           }
-          select.addEventListener("change", setTune)
-  
+          select.addEventListener("change", setTune) 
         });
 		  </script>
 		  </body>
