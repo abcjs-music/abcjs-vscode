@@ -104,7 +104,7 @@ function getHtml(editorContent, fileName) {
         <select></select>
       </label>
       <div id="paper"></div>
-		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.0.2/dist/abcjs-basic-min.js"></script>
+		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.0.4/dist/abcjs-basic-min.js"></script>
 		  <script>
 		  	const vscode = acquireVsCodeApi();
         console.log('api:', vscode)
