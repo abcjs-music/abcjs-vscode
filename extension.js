@@ -170,6 +170,7 @@ function getHtml(editorContent, fileName) {
               select.appendChild(option)
             }
             select.value = options.startingTune;
+            document.getElementById("tune-selector").style.display = "block"
           } else {
             document.getElementById("tune-selector").style.display = "none"
             options.startingTune = 0
