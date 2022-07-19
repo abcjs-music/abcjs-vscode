@@ -183,9 +183,11 @@ function getHtml(editorContent, fileName) {
 
           switch (message.command) {
               case 'contentChange':
-                abc = message.content;
-                analyzeContent()
-                drawTune()
+                if (abc !== message.content) {
+                  abc = message.content;
+                  analyzeContent()
+                  drawTune()
+                }
                 break;
           }
         });
