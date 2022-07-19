@@ -8,10 +8,19 @@
         { "include": "#length" },
         { "include": "#tempo" },
         { "include": "#composer" },
+        { "include": "#notes" },
+        { "include": "#part" },
+        { "include": "#redefine" },
+        { "include": "#rhythm" },
+        { "include": "#source" },
         { "include": "#instructions" },
         { "include": "#comments" },
-        { "include": "#voice-section" }
-    ],
+        { "include": "#voice-section" },
+        { "include": "#chords" },
+        { "include": "#words" },
+        { "include": "#bar" },
+        { "include": "#ornaments" }
+],
     "repository": {
         "title": {
             "patterns": [                
@@ -62,8 +71,52 @@
                 {
                     "match": "^(P:)(.*)",
                     "captures": {
-                        "1": { "name": "keyword.other.part.abc" },
-                        "2": { "name": "string.value.part.abc" }
+                        "1": { "name": "markup.underline.other.part.abc" },
+                        "2": { "name": "markup.underline.other.part.abc" }
+                    }
+                }
+            ]
+        },
+        "notes": {
+            "patterns": [                
+                {
+                    "match": "^(N:)(.*)",
+                    "captures": {
+                        "1": { "name": "keyword.other.notes.abc" },
+                        "2": { "name": "string.value.notes.abc" }
+                    }
+                }
+            ]
+        },
+        "redefine": {
+            "patterns": [                
+                {
+                    "match": "^(U:)(.*)",
+                    "captures": {
+                        "1": { "name": "keyword.other.redefine.abc" },
+                        "2": { "name": "string.value.redefine.abc" }
+                    }
+                }
+            ]
+        },
+        "rhythm": {
+            "patterns": [                
+                {
+                    "match": "^(R:)(.*)",
+                    "captures": {
+                        "1": { "name": "keyword.other.rhythm.abc" },
+                        "2": { "name": "string.value.rhythm.abc" }
+                    }
+                }
+            ]
+        },
+        "source": {
+            "patterns": [                
+                {
+                    "match": "^(S:)(.*)",
+                    "captures": {
+                        "1": { "name": "keyword.other.source.abc" },
+                        "2": { "name": "string.value.source.abc" }
                     }
                 }
             ]
@@ -135,14 +188,14 @@
             "patterns": [                
                 {
                     "match": "\"([^\".]*)\"",
-                    "name": "keyword.other.chords.abc"
+                    "name": "entity.name.type.other.chords.abc"
                 }
             ]
         },
         "words": {
             "patterns": [                
                 {
-                    "match": "^(w:)(.*)",
+                    "match": "^([Ww]:)(.*)",
                     "name": "keyword.other.words.abc"
                 }
             ]
@@ -159,7 +212,7 @@
             "patterns": [                
                 {
                     "match": "\\!([^\\!.]*)\\!",
-                    "name": "keyword.other.ornaments.abc"
+                    "name": "entity.name.type.other.ornaments.abc"
                 }
             ]
         }        
