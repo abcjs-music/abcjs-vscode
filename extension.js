@@ -42,7 +42,7 @@ function activate(context) {
 }
 
 function getFileName() {
-  const path = vscode.window.activeTextEditor.document.fileName
+  const path = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : "ABC File Not Selected"
   const arr = path.split("/")
   return arr[arr.length - 1]
 }
@@ -108,10 +108,23 @@ function getHtml(editorContent, fileName) {
         font-weight: normal;
         font-style: normal;
       }
+      .options {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: .5em;
+      }
+      #transpose {
+        margin-left: 1em;
+      }
     </style>
 	  </head>
 		<body>
 		  <h1 class="title">${fileName}</h1>
+      <div class="options">
+        <label><input id="jazz-chords" class="option" type="checkbox" checked>Use Jazz Chord Format</label>
+        <label>Transpose (half-steps)<input id="transpose" class="option" type="number" min="-12" max="12" value="0"></label>
+        <!--<label><select id="tablature" class="option"><option>none</option><option>violin</option><option>guitar</option></select>Tablature</label>-->
+      </div>
       <label id="tune-selector">Select Tune: 
         <select></select>
       </label>
@@ -131,15 +144,51 @@ function getHtml(editorContent, fileName) {
           })
         }
 
+        var options = {
+          startingTune: 0,
+          responsive: "resize", 
+          clickListener: clickListener,
+          format: {
+            gchordfont: '"itim-music,Itim" 20'
+          },
+          jazzchords: document.getElementById("jazz-chords").checked,
+          visualTranspose: 0,
+        }
+        var abc = "";
+
+        function optionChanged() {
+          options.jazzchords = document.getElementById("jazz-chords").checked
+          options.visualTranspose = document.getElementById("transpose").value
+          // var tablature = document.getElementById("tablature").value
+          // switch(tablature) {
+          //   case "none":
+          //     delete options.tablature
+          //     break;
+          //   case "violin":
+          //     options.tablature = [ { instrument: "violin" }]
+          //     break;
+          //   case "guitar":
+          //     options.tablature = [ { instrument: "guitar" }]
+          //     break;
+          // }
+          drawTune()
+        }
+
+        function drawTune() {
+          ABCJS.renderAbc("paper", abc, options);
+        }
+        var setTune = function() {
+          options.startingTune = this.value
+          drawTune()
+        }
+
+        var optionEls = document.querySelectorAll(".option")
+        for (var i = 0; i < optionEls.length; i++) {
+          document.addEventListener("change", optionChanged)
+        }
+
 		    document.addEventListener("DOMContentLoaded", function (event) {
-          var options = {
-            responsive: "resize", 
-            clickListener: clickListener,
-            format: {
-              gchordfont: '"itim-music,Itim" 20'
-            }
-          }
-          var abc = \`${editorContent}\`
+          abc = \`${editorContent}\`
           var tuneBook = new ABCJS.TuneBook(abc)
           if (tuneBook.tunes.length >= 2) {
             var select = document.querySelector("#tune-selector select")
@@ -155,15 +204,12 @@ function getHtml(editorContent, fileName) {
               option.setAttribute('value', i)
               select.appendChild(option)
             }
+            select.addEventListener("change", setTune) 
           } else {
             document.getElementById("tune-selector").style.display = "none"
-            ABCJS.renderAbc("paper", abc, options);
+            options.startingTune = 0
+            drawTune()
           }
-          var setTune = function() {
-            var index = this.value
-            ABCJS.renderAbc("paper", abc, Object.assign({}, options, { startingTune: index }));
-          }
-          select.addEventListener("change", setTune) 
         });
 		  </script>
 		  </body>
