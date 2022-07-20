@@ -8,21 +8,6 @@ let panel = null;
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-
-  // The command has been defined in the package.json file
-  // The commandId parameter must match the command field in package.json
-  //   let disposable = vscode.commands.registerCommand(
-  //     "abcjs-editor.helloWorld",
-  //     function () {
-  //       // The code you place here will be executed every time your command is executed
-
-  //       // Display a message box to the user
-  //       vscode.window.showInformationMessage("Hello World from abcjs editor!");
-  //     }
-  //   );
-  //   context.subscriptions.push(disposable);
-
   // abcjs preview
 
   const outputChannel = vscode.window.createOutputChannel(
@@ -36,13 +21,13 @@ function activate(context) {
 
   // Update the Preview when code changes.
   vscode.workspace.onDidChangeTextDocument((eventArgs) => {
-    console.log('changed', eventArgs);
+    //console.log('changed', eventArgs);
     updatePreview(eventArgs)
   });
 }
 
 function getFileName() {
-  const path = vscode.window.activeTextEditor.document.fileName
+  const path = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.fileName : "ABC File Not Selected"
   const arr = path.split("/")
   return arr[arr.length - 1]
 }
@@ -57,35 +42,12 @@ function updatePreview(eventArgs) {
     return
   }
 
-  //   let html = getWebviewContent(getNormalizedEditorContent(vscode.window.activeTextEditor),
-  //     context.extensionPath
-  //   );
   const editorContent = getNormalizedEditorContent(
     vscode.window.activeTextEditor
   );
-  const html = getHtml(editorContent, getFileName());
-
   if (panel != null) {
-    panel.webview.html = html;
+    panel.webview.postMessage({ command: 'contentChange', content: editorContent });
   }
-}
-
-function registerWebViewProvider() {
-  // Web View preview
-  // https://github.com/microsoft/vscode-extension-samples/blob/master/webview-view-sample/src/extension.ts
-  //   const provider = new AbcjsPreviewProvider(context.extensionUri);
-  //   context.subscriptions.push(
-  //     vscode.window.registerWebviewViewProvider(
-  //       AbcjsPreviewProvider.viewType,
-  //       provider
-  //     )
-  //   );
-  //   context.subscriptions.push(
-  //     vscode.commands.registerCommand(
-  //       "abcjs-vscode.showPreview",
-  //       provider.renderAbc
-  //     )
-  //   );
 }
 
 /**
@@ -97,9 +59,34 @@ function getHtml(editorContent, fileName) {
 	  <head>
 		  <meta charset="UTF-8">
 		  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+      @import url(https://fonts.googleapis.com/css?family=Itim);
+
+      @font-face {
+        font-family: 'itim-music';
+        src:  	url('https://paulrosen.github.io/abcjs/fonts/itim-music.ttf') format('truetype'),
+                url('https://paulrosen.github.io/abcjs/fonts/itim-music.woff') format('woff'),
+                url('https://paulrosen.github.io/abcjs/fonts/itim-music.svg#icomoon') format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: .5em;
+      }
+      #transpose {
+        margin-left: 1em;
+      }
+    </style>
 	  </head>
 		<body>
 		  <h1 class="title">${fileName}</h1>
+      <div class="options">
+        <label><input id="jazz-chords" class="option" type="checkbox" checked>Use Jazz Chord Format</label>
+        <label>Transpose (half-steps)<input id="transpose" class="option" type="number" min="-12" max="12" value="0"></label>
+        <!--<label><select id="tablature" class="option"><option>none</option><option>violin</option><option>guitar</option></select>Tablature</label>-->
+      </div>
       <label id="tune-selector">Select Tune: 
         <select></select>
       </label>
@@ -107,7 +94,7 @@ function getHtml(editorContent, fileName) {
 		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.0.4/dist/abcjs-basic-min.js"></script>
 		  <script>
 		  	const vscode = acquireVsCodeApi();
-        console.log('api:', vscode)
+        //console.log('api:', vscode)
 
         function clickListener(abcElem, tuneNumber, classes) {
           vscode.postMessage({
@@ -119,15 +106,61 @@ function getHtml(editorContent, fileName) {
           })
         }
 
-		    document.addEventListener("DOMContentLoaded", function (event) {
-          var abc = \`${editorContent}\`
+        var options = {
+          startingTune: 0,
+          responsive: "resize", 
+          clickListener: clickListener,
+          format: {
+            gchordfont: '"itim-music,Itim" 20'
+          },
+          jazzchords: document.getElementById("jazz-chords").checked,
+          visualTranspose: 0,
+        }
+        var abc = "";
+
+        function optionChanged() {
+          options.jazzchords = document.getElementById("jazz-chords").checked
+          options.visualTranspose = document.getElementById("transpose").value
+          // var tablature = document.getElementById("tablature").value
+          // switch(tablature) {
+          //   case "none":
+          //     delete options.tablature
+          //     break;
+          //   case "violin":
+          //     options.tablature = [ { instrument: "violin" }]
+          //     break;
+          //   case "guitar":
+          //     options.tablature = [ { instrument: "guitar" }]
+          //     break;
+          // }
+          drawTune()
+        }
+
+        function drawTune() {
+          ABCJS.renderAbc("paper", abc, options);
+        }
+
+        var setTune = function() {
+          options.startingTune = this.value
+          drawTune()
+        }
+
+        var optionEls = document.querySelectorAll(".option")
+        for (var i = 0; i < optionEls.length; i++) {
+          document.addEventListener("change", optionChanged)
+        }
+
+        var select = document.querySelector("#tune-selector select")
+        select.addEventListener("change", setTune) 
+
+        function analyzeContent() {
           var tuneBook = new ABCJS.TuneBook(abc)
           if (tuneBook.tunes.length >= 2) {
-            var select = document.querySelector("#tune-selector select")
             select.innerHTML = ""
             var option = document.createElement("option");
             var optionContent = document.createTextNode("-- select tune --");
             option.appendChild(optionContent);
+            option.setAttribute('value', -1)
             select.appendChild(option)
             for (var i = 0; i < tuneBook.tunes.length; i++) {
               option = document.createElement("option");
@@ -136,16 +169,33 @@ function getHtml(editorContent, fileName) {
               option.setAttribute('value', i)
               select.appendChild(option)
             }
+            select.value = options.startingTune;
+            document.getElementById("tune-selector").style.display = "block"
           } else {
             document.getElementById("tune-selector").style.display = "none"
-            ABCJS.renderAbc("paper", abc, { responsive: "resize", clickListener: clickListener});
+            options.startingTune = 0
           }
-          var setTune = function() {
-            var index = this.value
-            ABCJS.renderAbc("paper", abc, { responsive: "resize", startingTune: index, clickListener: clickListener});
+        }
+
+        window.addEventListener('message', event => {
+
+          const message = event.data; // The JSON data our extension sent
+
+          switch (message.command) {
+              case 'contentChange':
+                if (abc !== message.content) {
+                  abc = message.content;
+                  analyzeContent()
+                  drawTune()
+                }
+                break;
           }
-          select.addEventListener("change", setTune)
-  
+        });
+
+		    document.addEventListener("DOMContentLoaded", function (event) {
+          abc = \`${editorContent}\`
+          analyzeContent()
+          drawTune()
         });
 		  </script>
 		  </body>
@@ -178,16 +228,8 @@ function showPreview(context, outputChannel) {
 
   panel.webview.html = html;
 
-  // handle messages from the webview
-  // panel.webview.onDidReceiveMessage(message => {
-  // 	switch (message.command) {
-  // 		case 'selection':
-  // 			jumpToPosition(message.start, message.stop);
-  // 			return;
-  // 	}
-  // }, undefined, context.subscriptions);
   panel.webview.onDidReceiveMessage((message) => {
-    console.log(message);
+    //console.log(message);
     // Receiving only the element-selection messages at the moment.
     // Select the character in the editor.
 
@@ -233,7 +275,6 @@ function getNormalizedEditorContent(editor) {
     return "";
   }
 
-  //let content = editor?.document.getText();
   let content = editor.document.getText();
 
   // escape the \
@@ -248,91 +289,6 @@ function getNormalizedEditorContent(editor) {
 
 // this method is called when your extension is deactivated
 function deactivate() { }
-
-class AbcjsPreviewProvider {
-  // static viewType = "abcjs-vscode.abcView";
-
-  constructor(extensionUri) {
-    this._view = null;
-    this._extensionUri = extensionUri;
-
-    console.log("extension uri:", extensionUri);
-  }
-
-  resolveWebviewView(webviewView, context, _token) {
-    this._view = webviewView;
-
-    webviewView.webview.options = {
-      // Allow scripts in the webview
-      enableScripts: true,
-
-      localResourceRoots: [this._extensionUri],
-    };
-
-    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-
-    webviewView.webview.onDidReceiveMessage((data) => {
-      switch (data.type) {
-        case "colorSelected": {
-          vscode.window.activeTextEditor.insertSnippet(
-            new vscode.SnippetString(`#${data.value}`)
-          );
-          break;
-        }
-      }
-    });
-  }
-
-  renderAbc() {
-    console.log("rendering output");
-  }
-
-  _getHtmlForWebview(webview) {
-    // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-    const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "main.js")
-    );
-
-    // Do the same for the stylesheet.
-    const styleResetUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
-    );
-    const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
-    );
-    const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "main.css")
-    );
-
-    // Use a nonce to only allow a specific script to be run.
-    //const nonce = getNonce();
-    const nonce = "once?";
-
-    return `<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<meta charset="UTF-8">
-				<!--
-					Use a content security policy to only allow loading images from https or from our extension directory,
-					and only allow scripts that have a specific nonce.
-				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link href="${styleResetUri}" rel="stylesheet">
-				<link href="${styleVSCodeUri}" rel="stylesheet">
-				<link href="${styleMainUri}" rel="stylesheet">
-				
-				<title>Cat Colors</title>
-			</head>
-			<body>
-				<ul class="color-list">
-				</ul>
-				<button class="add-color-button">Add Color</button>
-				<script nonce="${nonce}" src="${scriptUri}"></script>
-			</body>
-			</html>`;
-  }
-}
 
 module.exports = {
   activate,
