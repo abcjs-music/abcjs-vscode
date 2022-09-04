@@ -24,6 +24,16 @@ function activate(context) {
     //console.log('changed', eventArgs);
     updatePreview(eventArgs)
   });
+  vscode.window.onDidChangeActiveTextEditor((eventArgs) => {
+    if (eventArgs) {
+      //console.log('active', eventArgs);
+      const editorContent = getNormalizedEditorContent(
+        vscode.window.activeTextEditor
+      );
+      panel.webview.html = getHtml(editorContent, getFileName());
+      updatePreview(eventArgs)
+    }
+  });
 }
 
 function getFileName() {
