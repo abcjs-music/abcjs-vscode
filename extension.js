@@ -127,14 +127,14 @@ function getHtml(editorContent, fileName) {
           <label><span class="width-label">Transpose:</span><input id="transpose" class="option" type="number" min="-12" max="12" value="0"> (half-steps)</label>
           <label><input id="output-transposition" class="option" type="checkbox" checked>Show ABC</label>
         </div>
-        <label style="display:none;"><span class="width-label">Tablature:</span><select id="tablature" class="option"><option>None</option><option>Violin</option><option>Guitar</option></select></label>
+        <label><span class="width-label">Tablature:</span><select id="tablature" class="option"><option>None</option><option>Violin</option><option>Guitar</option></select></label>
       <label id="tune-selector"><span class="width-label">Tune:</span><select></select>
       </label>
       </fieldset>
       </div>
       <div id="source"></div>
       <div id="paper"></div>
-		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.1.2/dist/abcjs-basic-min.js"></script>
+		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.1.3/dist/abcjs-basic-min.js"></script>
 		  <script>
 		  	const vscode = acquireVsCodeApi();
         //console.log('api:', vscode)
@@ -166,13 +166,13 @@ function getHtml(editorContent, fileName) {
           options.visualTranspose = document.getElementById("transpose").value
           var tablature = document.getElementById("tablature").value
           switch(tablature) {
-            case "none":
+            case "None":
               delete options.tablature
               break;
-            case "violin":
+            case "Violin":
               options.tablature = [ { instrument: "violin" }]
               break;
-            case "guitar":
+            case "Guitar":
               options.tablature = [ { instrument: "guitar" }]
               break;
           }
