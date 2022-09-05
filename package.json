@@ -52,6 +52,12 @@
         "scopeName": "source.abc",
         "path": "./abc.tmGrammar.json"
       }
+    ],
+    "snippets": [
+      {
+        "language": "abc",
+        "path": "./snippets.json"
+      }
     ]
   },
   "scripts": {
