@@ -53,13 +53,14 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "pnpm run lint",
+    "publish": "npx vsce publish",
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
     "@types/glob": "7.2.0",
     "@types/mocha": "9.1.1",
     "@types/node": "18.7.15",
-    "@types/vscode": "1.71.0",
+    "@types/vscode": "1.65.0",
     "@vscode/test-electron": "2.1.5",
     "eslint": "8.23.0",
     "glob": "7.2.0",
