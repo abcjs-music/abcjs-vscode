@@ -8,6 +8,7 @@
         { "include": "#length" },
         { "include": "#tempo" },
         { "include": "#composer" },
+        { "include": "#origin" },
         { "include": "#notes" },
         { "include": "#part" },
         { "include": "#redefine" },
@@ -150,6 +151,17 @@
                     "captures": {
                         "1": { "name": "keyword.other.composer.abc" },
                         "2": { "name": "string.value.composer.abc" }
+                    }
+                }
+            ]
+        },
+        "origin": {
+            "patterns": [                
+                {
+                    "match": "^(O:)(.*)",
+                    "captures": {
+                        "1": { "name": "keyword.other.origin.abc" },
+                        "2": { "name": "string.value.origin.abc" }
                     }
                 }
             ]

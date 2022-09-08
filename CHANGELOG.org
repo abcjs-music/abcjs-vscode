@@ -4,6 +4,10 @@ All notable changes to the "abcjs-editor" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+** 1.3.1
+
+Update abcjs to v6.1.3. Add option to show transposed ABC string. Add option to show tablature. Add snippet for creating a new tune.
+
 ** 1.3.0
 
 Update abcjs to v6.0.4. Add option for transpose. Add font for chords.

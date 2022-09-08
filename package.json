@@ -2,7 +2,7 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "Abc music notation editor, using abcjs",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "publisher": "alensiljak",
   "author": {
     "name": "Alen Šiljak"
@@ -47,6 +47,12 @@
         "language": "abc",
         "scopeName": "source.abc",
         "path": "./abc.tmGrammar.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "abc",
+        "path": "./snippets.json"
       }
     ]
   },

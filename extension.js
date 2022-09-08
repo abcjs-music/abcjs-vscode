@@ -24,6 +24,16 @@ function activate(context) {
     //console.log('changed', eventArgs);
     updatePreview(eventArgs)
   });
+  vscode.window.onDidChangeActiveTextEditor((eventArgs) => {
+    if (eventArgs) {
+      //console.log('active', eventArgs);
+      const editorContent = getNormalizedEditorContent(
+        vscode.window.activeTextEditor
+      );
+      panel.webview.html = getHtml(editorContent, getFileName());
+      updatePreview(eventArgs)
+    }
+  });
 }
 
 function getFileName() {
@@ -70,28 +80,61 @@ function getHtml(editorContent, fileName) {
         font-weight: normal;
         font-style: normal;
       }
+      h1 {
+        margin: 0;
+        padding: 0;
+        flex-grow: 2;
+      }
+      .top {
+        display:flex;
+        align-items: flex-top;
+        column-gap: 10px;
+        justify-content: space-between;
+      }
       .options {
         display: flex;
         flex-direction: column;
         margin-bottom: .5em;
+        flex-shrink: 2;
+        row-gap: 5px;
+        border: 1px dotted #888;
       }
-      #transpose {
-        margin-left: 1em;
+      .options > * {
+        display: block;
+      }
+      .width-label {
+        width: 80px;
+        display: inline-block;
+      }
+      #source {
+        display: none;
+      }
+      #source.show {
+        display: block;
+        border: 1px dotted #888;
+        padding: 10px;
+        margin-top: 10px;
       }
     </style>
 	  </head>
 		<body>
+    <div class="top">
 		  <h1 class="title">${fileName}</h1>
-      <div class="options">
+      <fieldset class="options">
+        <legend>Options</legend>
         <label><input id="jazz-chords" class="option" type="checkbox" checked>Use Jazz Chord Format</label>
-        <label>Transpose (half-steps)<input id="transpose" class="option" type="number" min="-12" max="12" value="0"></label>
-        <!--<label><select id="tablature" class="option"><option>none</option><option>violin</option><option>guitar</option></select>Tablature</label>-->
-      </div>
-      <label id="tune-selector">Select Tune: 
-        <select></select>
+        <div>
+          <label><span class="width-label">Transpose:</span><input id="transpose" class="option" type="number" min="-12" max="12" value="0"> (half-steps)</label>
+          <label><input id="output-transposition" class="option" type="checkbox" checked>Show ABC</label>
+        </div>
+        <label><span class="width-label">Tablature:</span><select id="tablature" class="option"><option>None</option><option>Violin</option><option>Guitar</option></select></label>
+      <label id="tune-selector"><span class="width-label">Tune:</span><select></select>
       </label>
+      </fieldset>
+      </div>
+      <div id="source"></div>
       <div id="paper"></div>
-		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.0.4/dist/abcjs-basic-min.js"></script>
+		  <script src="https://cdn.jsdelivr.net/npm/abcjs@6.1.3/dist/abcjs-basic-min.js"></script>
 		  <script>
 		  	const vscode = acquireVsCodeApi();
         //console.log('api:', vscode)
@@ -121,23 +164,37 @@ function getHtml(editorContent, fileName) {
         function optionChanged() {
           options.jazzchords = document.getElementById("jazz-chords").checked
           options.visualTranspose = document.getElementById("transpose").value
-          // var tablature = document.getElementById("tablature").value
-          // switch(tablature) {
-          //   case "none":
-          //     delete options.tablature
-          //     break;
-          //   case "violin":
-          //     options.tablature = [ { instrument: "violin" }]
-          //     break;
-          //   case "guitar":
-          //     options.tablature = [ { instrument: "guitar" }]
-          //     break;
-          // }
+          var tablature = document.getElementById("tablature").value
+          switch(tablature) {
+            case "None":
+              delete options.tablature
+              break;
+            case "Violin":
+              options.tablature = [ { instrument: "violin" }]
+              break;
+            case "Guitar":
+              options.tablature = [ { instrument: "guitar" }]
+              break;
+          }
           drawTune()
         }
 
         function drawTune() {
           ABCJS.renderAbc("paper", abc, options);
+          var showSource = document.getElementById("output-transposition").checked
+          var source = document.getElementById("source")
+          if (showSource && parseInt(options.visualTranspose,10)) {
+            var tuneBook = new ABCJS.TuneBook(abc)
+            var tune = tuneBook.tunes[options.startingTune]
+            if (tune) {
+              var visualObj = ABCJS.renderAbc("*", tune.pure);
+              source.classList.add("show")
+              var output = ABCJS.strTranspose(tune.pure, visualObj, parseInt(options.visualTranspose,10))
+              source.innerText = output
+            }
+          } else {
+            source.classList.remove("show")
+          }
         }
 
         var setTune = function() {
