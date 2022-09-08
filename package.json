@@ -57,6 +57,10 @@
     ]
   },
   "scripts": {
+    "x-vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "npx esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "build": "npm run esbuild",
     "lint": "eslint .",
     "pretest": "pnpm run lint",
     "publish": "npx vsce publish",
@@ -65,7 +69,7 @@
   "devDependencies": {
     "@types/glob": "7.2.0",
     "@types/mocha": "9.1.1",
-    "@types/node": "18.7.15",
+    "@types/node": "18.7.16",
     "@types/vscode": "1.65.0",
     "@vscode/test-electron": "2.1.5",
     "eslint": "8.23.0",

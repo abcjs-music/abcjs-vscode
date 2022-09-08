@@ -53,11 +53,17 @@ See [CHANGELOG.org](CHANGELOG.org).
 
 --------------------------------------------------------------------------------------------------
 
-## Development
+# Development
 
 The package manager is npm.
 
-## References
+## Publishing
+
+`npm run publish`
+
+- [Bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension)
+
+# References
 
 - https://github.com/softawaregmbh/vscode-abc/
 
@@ -75,7 +81,7 @@ Documentation:
 - [Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 
 vsce publish
-Use a local version with ~yarn vsce publish~.
-
-Switched to npm as a package manager.
+Use a local version with
+npm run publish
+~yarn vsce publish~.
 -->
