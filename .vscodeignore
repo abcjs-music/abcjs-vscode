@@ -1,9 +1,4 @@
-.vscode
 node_modules
-out/
-src/
-tsconfig.json
-jsconfig.json
 
 .vscode/**
 .vscode-test/**

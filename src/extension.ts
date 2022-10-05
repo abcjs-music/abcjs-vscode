@@ -116,7 +116,7 @@ async function getHtml(
   fileName: string
 ) {
   const onDiskPath = vscode.Uri.file(
-    path.join(context.extensionPath, 'src', 'viewer.html')
+    path.join(context.extensionPath, 'res', 'viewer.html')
   );
   //const filePath = path.join(context.extensionPath, 'src', 'viewer.html')
   //const filePath = panel.webview.asWebviewUri(onDiskPath);
