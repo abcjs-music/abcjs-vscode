@@ -1,11 +1,10 @@
 /*
   Extension code
  */
-//import path from 'path';
 import { WebviewPanel } from 'vscode';
+
 import * as VScode from 'vscode';
 import path = require('path');
-//import fs = require('fs');
 // The module 'vscode' contains the VS Code extensibility API
 import vscode = require('vscode');
 
