@@ -2,7 +2,7 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "ABC music notation editor, using abcjs library",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "publisher": "alensiljak",
   "author": {
     "name": "Alen Šiljak"
@@ -85,9 +85,9 @@
     "eslint": "8.24.0",
     "glob": "8.0.3",
     "mocha": "10.0.0",
-    "typescript": "4.8.4"
+    "typescript": "4.8.4",
+    "vsce": "2.11.0"
   },
   "dependencies": {
-    "vsce": "2.11.0"
   }
 }
