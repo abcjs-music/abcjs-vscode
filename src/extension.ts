@@ -42,7 +42,7 @@ function activate(context: VScode.ExtensionContext) {
 /**
  * open the preview window to the side.
  */
-async function showPreview(context: VScode.ExtensionContext, outputChannel) {
+async function showPreview(context: VScode.ExtensionContext, outputChannel: any) {
   //console.log('registering the viewer');
 
   panel = createPanel(context);
