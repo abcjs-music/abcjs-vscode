@@ -28,29 +28,40 @@ function activate(context: VScode.ExtensionContext) {
 
   // Update the Preview when code changes.
   vscode.workspace.onDidChangeTextDocument((eventArgs) => {
-    //console.log('changed', eventArgs);
     updatePreview(eventArgs);
   });
   vscode.window.onDidChangeActiveTextEditor(async (eventArgs) => {
     if (eventArgs) {
       if (!panel || !vscode.window.activeTextEditor) return;
 
-      //console.log('active', eventArgs);
-      const editorContent = getNormalizedEditorContent(
-        vscode.window.activeTextEditor
-      );
-      panel.webview.html = await getHtml(
-        context,
-        editorContent,
-        getFileName()
-      );
       updatePreview(eventArgs);
     }
   });
 }
 
-function renderPreview() {
-  // todo
+/**
+ * open the preview window to the side.
+ */
+async function showPreview(context: VScode.ExtensionContext, outputChannel) {
+  //console.log('registering the viewer');
+
+  panel = createPanel(context);
+
+  const editorContent = getNormalizedEditorContent(
+    vscode.window.activeTextEditor
+  );
+  panel.webview.html = await getHtml(context, editorContent, getFileName());
+
+  panel.webview.onDidReceiveMessage((message) => {
+    // Receiving only the element-selection messages at the moment.
+    // Select the character in the editor.
+    try {
+      select(message.startChar, message.endChar);
+    } catch (error: any) {
+      console.error(error);
+      vscode.window.showErrorMessage(error);
+    }
+  });
 }
 
 function getFileName() {
@@ -67,6 +78,9 @@ function updatePreview(
   if (!vscode.window.activeTextEditor) {
     throw new Error('No active text editor!');
   }
+  if (!panel) {
+    throw new Error('No preview panel found!');
+  }
 
   const language = eventArgs.document.languageId;
 
@@ -79,12 +93,11 @@ function updatePreview(
   const editorContent = getNormalizedEditorContent(
     vscode.window.activeTextEditor
   );
-  if (panel != null) {
-    panel.webview.postMessage({
-      command: 'contentChange',
-      content: editorContent,
-    });
-  }
+
+  panel.webview.postMessage({
+    command: 'contentChange',
+    content: editorContent,
+  });
 }
 
 /**
@@ -93,8 +106,8 @@ function updatePreview(
  */
 async function getHtml(
   context: VScode.ExtensionContext,
-  editorContent,
-  fileName
+  editorContent: string,
+  fileName: string
 ) {
   const onDiskPath = vscode.Uri.file(
     path.join(context.extensionPath, 'src', 'viewer.html')
@@ -105,45 +118,12 @@ async function getHtml(
 
   let html = fileContent.toString();
 
-  // todo: replace variables
+  // replace variables? It seems to be automatic. Magic!
   // ${editorContent}
-  html = html.replace('${fileName}', fileName)
-  html = html.replace('${title}', fileName)
+  html = html.replace('${fileName}', fileName);
+  //html = html.replace('${title}', fileName);
 
   return html;
-}
-
-/**
- * open the preview window to the side.
- */
-async function showPreview(context: VScode.ExtensionContext, outputChannel) {
-  //console.log('registering the viewer');
-  if (!vscode.window.activeTextEditor) {
-    throw new Error('No active text editor!');
-  }
-
-  panel = createPanel(context);
-
-  const editorContent = getNormalizedEditorContent(
-    vscode.window.activeTextEditor
-  );
-
-  const html = await getHtml(context, editorContent, getFileName());
-
-  panel.webview.html = html;
-
-  panel.webview.onDidReceiveMessage((message) => {
-    //console.log(message);
-    // Receiving only the element-selection messages at the moment.
-    // Select the character in the editor.
-
-    try {
-      select(message.startChar, message.endChar);
-    } catch (error: any) {
-      console.error(error);
-      vscode.window.showErrorMessage(error);
-    }
-  });
 }
 
 /**
@@ -174,7 +154,7 @@ function select(start: number, end: number) {
   editor.revealRange(editor.selection);
 }
 
-function getNormalizedEditorContent(editor: VScode.TextEditor) {
+function getNormalizedEditorContent(editor?: VScode.TextEditor) {
   if (editor == null) {
     return '';
   }
