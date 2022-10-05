@@ -32,7 +32,9 @@ function activate(context: VScode.ExtensionContext) {
   });
   vscode.window.onDidChangeActiveTextEditor(async (eventArgs) => {
     if (eventArgs) {
-      if (!panel || !vscode.window.activeTextEditor) return;
+      if (!panel || !vscode.window.activeTextEditor) {
+        return;
+      }
 
       updatePreview(eventArgs);
     }
@@ -159,7 +161,7 @@ function select(start: number, end: number) {
 }
 
 function getNormalizedEditorContent(editor?: VScode.TextEditor) {
-  if (editor == null) {
+  if (!editor) {
     return '';
   }
 
@@ -168,7 +170,7 @@ function getNormalizedEditorContent(editor?: VScode.TextEditor) {
   // escape the \
   content = content.replaceAll('\\', '\\\\');
 
-  if (editor.document.eol == vscode.EndOfLine.CRLF) {
+  if (editor.document.eol === vscode.EndOfLine.CRLF) {
     content = content.replace(/\r\n/g, '\n');
   }
 
