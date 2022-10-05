@@ -65,10 +65,12 @@ async function showPreview(context: VScode.ExtensionContext, outputChannel) {
 }
 
 function getFileName() {
-  const path = vscode.window.activeTextEditor
+  const filePath = vscode.window.activeTextEditor
     ? vscode.window.activeTextEditor.document.fileName
     : 'ABC File Not Selected';
-  const arr = path.split('/');
+  
+  const arr = filePath.split(path.sep);
+  
   return arr[arr.length - 1];
 }
 
@@ -98,6 +100,8 @@ function updatePreview(
     command: 'contentChange',
     content: editorContent,
   });
+
+  panel.title = 'abc: ' + getFileName();
 }
 
 /**
