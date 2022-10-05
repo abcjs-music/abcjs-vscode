@@ -1,4 +1,13 @@
 {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	},
+    "plugins": [
+        "@typescript-eslint"
+    ],
 	"env": {
 		"browser": false,
 		"commonjs": true,
@@ -6,20 +15,24 @@
 		"node": true,
 		"mocha": true
 	},
-	"parserOptions": {
-		"ecmaVersion": 2018,
-		"ecmaFeatures": {
-			"jsx": true
-		},
-		"sourceType": "module"
-	},
 	"rules": {
+        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/semi": "warn",
+        "curly": "warn",
+        "eqeqeq": "warn",
 		"no-const-assign": "warn",
 		"no-this-before-super": "warn",
+        "no-throw-literal": "warn",
 		"no-undef": "warn",
 		"no-unreachable": "warn",
 		"no-unused-vars": "warn",
 		"constructor-super": "warn",
+        "semi": "off",
 		"valid-typeof": "warn"
-	}
+	},
+    "ignorePatterns": [
+        "out",
+        "dist",
+        "**/*.d.ts"
+    ]
 }

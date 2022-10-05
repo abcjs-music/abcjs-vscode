@@ -23,7 +23,7 @@
     "onCommand:abcjs-vscode.helloWorld",
     "onCommand:abcjs-vscode.showPreview"
   ],
-  "main": "./extension.js",
+  "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
@@ -57,25 +57,29 @@
     ]
   },
   "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+
     "x-vscode:prepublish": "npm run esbuild-base -- --minify",
     "esbuild-base": "npx esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
     "esbuild": "npm run esbuild-base -- --sourcemap",
     "build": "npm run esbuild",
-    "lint": "eslint .",
-    "pretest": "pnpm run lint",
-    "publish": "npx vsce publish",
-    "test": "node ./test/runTest.js"
+    "publish": "npx vsce publish"
   },
   "devDependencies": {
-    "@types/glob": "7.2.0",
-    "@types/mocha": "9.1.1",
-    "@types/node": "18.7.16",
-    "@types/vscode": "1.65.0",
+    "@types/glob": "8.0.0",
+    "@types/mocha": "10.0.0",
+    "@types/node": "18.8.2",
+    "@types/vscode": "1.71.0",
     "@vscode/test-electron": "2.1.5",
-    "eslint": "8.23.0",
-    "glob": "7.2.0",
-    "mocha": "9.2.2",
-    "typescript": "4.8.2"
+    "eslint": "8.24.0",
+    "glob": "8.0.3",
+    "mocha": "10.0.0",
+    "typescript": "4.8.4"
   },
   "dependencies": {
     "vsce": "2.11.0"
