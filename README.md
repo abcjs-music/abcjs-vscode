@@ -19,6 +19,12 @@ And a bit more elaborate:
 
 ![Screenshot 2](https://imgur.com/HMILUbe.png)
 
+### Print Preview
+
+The command `abcjs-vscode: Print Preview` will display a print-ready sheet in a browser. There you can print it to PDF or paper.
+
+![Print Preview](https://imgur.com/4enTxxd.png)
+
 ## Usage
 
 The only action available currently is "abcjs-vscode: Show Preview".
@@ -62,6 +68,8 @@ The package manager is npm.
 `npm run publish`
 
 - [Bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension)
+
+Note that the vscode engine version must start with a cared (^), otherwise it gets rejected by vscode on installation most of the time.
 
 # References
 
