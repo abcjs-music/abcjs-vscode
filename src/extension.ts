@@ -7,22 +7,50 @@ import * as VScode from 'vscode';
 import path = require('path');
 // The module 'vscode' contains the VS Code extensibility API
 import vscode = require('vscode');
+import * as os from 'os';
+import { pathToFileURL } from 'url';
 
-let panel: WebviewPanel | undefined = undefined;
+let panel: WebviewPanel;
+let outputChannel: VScode.OutputChannel;
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context: VScode.ExtensionContext) {
-  const outputChannel = vscode.window.createOutputChannel('abcjs-vscode');
+  outputChannel = vscode.window.createOutputChannel('abcjs-vscode');
   outputChannel.appendLine('starting abcjs extension...');
   //outputChannel.show();
 
   // Commands
-  registerCommands(context, outputChannel);
+  registerCommands(context);
 
   // Behaviour
+  registerEvents();
+}
 
+function registerCommands(context: VScode.ExtensionContext) {
+  // Show Viewer
+  let viewer = vscode.commands.registerCommand('abcjs-vscode.showPreview', () =>
+    showPreview(context)
+  );
+  context.subscriptions.push(viewer);
+
+  // Export
+  let exportCommand = vscode.commands.registerCommand(
+    'abcjs-vscode.export',
+    () => exportSheet(context)
+  );
+  context.subscriptions.push(exportCommand);
+
+  // Print Preview
+  let printCommand = vscode.commands.registerCommand(
+    'abcjs-vscode.printPreview',
+    () => printPreview(context)
+  );
+  context.subscriptions.push(printCommand);
+}
+
+function registerEvents() {
   // Update the Preview when code changes.
   vscode.workspace.onDidChangeTextDocument((eventArgs) => {
     updatePreview(eventArgs, outputChannel);
@@ -38,34 +66,8 @@ function activate(context: VScode.ExtensionContext) {
   });
 }
 
-function registerCommands(
-  context: VScode.ExtensionContext,
-  outputChannel: VScode.OutputChannel
-) {
-  // Register the command to Show the Viewer.
-  let viewer = vscode.commands.registerCommand('abcjs-vscode.showPreview', () =>
-    showPreview(context, outputChannel)
-  );
-  context.subscriptions.push(viewer);
-
-  // Print command
-  let exportCommand = vscode.commands.registerCommand(
-    'abcjs-vscode.export',
-    () => exportSheet(context)
-  );
-  context.subscriptions.push(exportCommand);
-}
-
-/**
- * open the preview window to the side.
- */
-async function showPreview(
-  context: VScode.ExtensionContext,
-  outputChannel: VScode.OutputChannel
-) {
+function initializePanel(context: VScode.ExtensionContext) {
   panel = createPanel(context);
-
-  panel.webview.html = await getHtml(context, getFileName());
 
   panel.webview.onDidReceiveMessage((message) => {
     // Receiving only the element-selection messages at the moment.
@@ -81,6 +83,22 @@ async function showPreview(
   });
 }
 
+/**
+ * open the preview window to the side.
+ */
+async function showPreview(context: VScode.ExtensionContext) {
+  initializePanel(context);
+
+  panel.webview.html = await getHtml(context, getFileName());
+}
+
+function getCurrentEditorContent(): string {
+  const editorContent = getNormalizedEditorContent(
+    vscode.window.activeTextEditor
+  );
+  return editorContent;
+}
+
 function getFileName() {
   const filePath = vscode.window.activeTextEditor
     ? vscode.window.activeTextEditor.document.fileName
@@ -89,6 +107,36 @@ function getFileName() {
   const arr = filePath.split(path.sep);
 
   return arr[arr.length - 1];
+}
+
+/**
+ * Get a filename for saving HTML.
+ */
+function getHtmlFilenameForExport(): string {
+  let filePath: string;
+
+  // if document is untitled, use tmp file.
+  if (vscode.window.activeTextEditor?.document.isUntitled) {
+    filePath = getTempFileForExport();
+  } else {
+    // existing file?
+    filePath = vscode.window.activeTextEditor?.document.fileName as string;
+    filePath += '.html';
+
+    // Depending on the window from which the command was executed, this might be
+    // just a title, an invalid path.
+    if (!path.isAbsolute) {
+      filePath = getTempFileForExport();
+    }
+  }
+
+  return filePath;
+}
+
+function getTempFileForExport() {
+  const tempDir = os.tmpdir();
+  const filePath = path.join(tempDir, 'abcjs-vscode-printPreview.html');
+  return filePath;
 }
 
 function updatePreview(
@@ -126,21 +174,12 @@ function updatePreview(
  * Generate the Preview HTML.
  * @param {String} editorContent
  */
-async function getHtml(
-  context: VScode.ExtensionContext,
-  fileName: string
-) {
-  const editorContent = getNormalizedEditorContent(
-    vscode.window.activeTextEditor
-  );
+async function getHtml(context: VScode.ExtensionContext, fileName: string) {
+  const editorContent = getCurrentEditorContent();
 
-  const onDiskPath = vscode.Uri.file(
-    path.join(context.extensionPath, 'res', 'viewer.html')
-  );
-  //const filePath = path.join(context.extensionPath, 'src', 'viewer.html')
+  const filePath = path.join(context.extensionPath, 'res', 'viewer.html');
   //const filePath = panel.webview.asWebviewUri(onDiskPath);
-  const fileContent = await VScode.workspace.fs.readFile(onDiskPath);
-  let html = fileContent.toString();
+  let html = await loadFileContent(filePath);
 
   // replace variables
   html = html.replace('${editorContent}', editorContent);
@@ -212,18 +251,17 @@ function createPanel(context: VScode.ExtensionContext): WebviewPanel {
   return result;
 }
 
+/**
+ * Export command. Render the sheet in HTML and open in a browser.
+ * @param context vs code context
+ */
 async function exportSheet(context: vscode.ExtensionContext) {
   if (vscode.window.activeTextEditor?.document.isUntitled) {
     vscode.window.showInformationMessage(
-      'Please save document before printing.'
+      'Please save document before exporting.'
     );
   }
 
-  // const html = getWebviewContent(
-  //   getNormalizedEditorContent(vscode.window.activeTextEditor),
-  //   context.extensionPath,
-  //   true
-  // );
   const html = await getHtml(context, context.extensionPath);
 
   let fs = require('fs');
@@ -233,6 +271,38 @@ async function exportSheet(context: vscode.ExtensionContext) {
   url = url.replaceAll('\\', '/');
   url = 'file:///' + url;
   await vscode.env.openExternal(vscode.Uri.parse(url));
+}
+
+/**
+ * Print command. Prepare the sheet for printing and open in a browser.
+ */
+async function printPreview(context: vscode.ExtensionContext) {
+  // load print template
+  const filePath = path.join(context.extensionPath, 'res', 'print.html');
+  let html = await loadFileContent(filePath);
+
+  // add content
+  const editorContent = getCurrentEditorContent();
+  html = html.replace('${abc}', editorContent);
+
+  // save
+  let savePath = getHtmlFilenameForExport();
+  const url = pathToFileURL(savePath).toString();
+  const uri = vscode.Uri.parse(url);
+  var content = Uint8Array.from(html.split('').map(x => x.charCodeAt(0)));
+  await VScode.workspace.fs.writeFile(uri, content);
+
+  // open browser
+  await vscode.env.openExternal(uri);
+}
+
+async function loadFileContent(filePath: string): Promise<string> {
+  const onDiskPath = vscode.Uri.file(filePath);
+
+  const fileContent = await VScode.workspace.fs.readFile(onDiskPath);
+
+  let readableContent = fileContent.toString();
+  return readableContent;
 }
 
 // this method is called when your extension is deactivated

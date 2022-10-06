@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @media screen {
+            #source {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media print {
+            #source {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div id="source">
+        <textarea id="abc" style="width: 100%;height: 15rem;"></textarea>
+        <button id="run">Render</button>
+    </div> -->
+
+    <!-- <div style="width: 210mm; height: 297mm; background-color: beige;"> -->
+    <div id="paper"></div>
+    <!-- </div> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/abcjs@6.1.3/dist/abcjs-basic-min.js"></script>
+    <script>
+        let options = {
+            print: true,
+            //responsive: "resize",
+            //oneSvgPerLine: true
+        }
+        // document.getElementById('run').onclick = function (event) {
+        //     const abc = document.getElementById('abc').value;
+        //     //console.log(abc)
+        //     ABCJS.renderAbc("paper", abc, options);
+        // }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Handler when the DOM is fully loaded
+            const abc = '';
+            ABCJS.renderAbc('paper', `${abc}`, options);
+        });
+    </script>
+</body>
+
+</html>
