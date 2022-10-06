@@ -21,15 +21,22 @@ And a bit more elaborate:
 
 ### Print Preview
 
-The command `abcjs-vscode: Print Preview` will display a print-ready sheet in a browser. There you can print it to PDF or paper.
+This command will display a print-ready sheet in a browser. There you can print it to PDF or paper.
 
 ![Print Preview](https://imgur.com/4enTxxd.png)
+
+### HTML Export
+
+The Export command will export an HTML page with the rendered score sheet.
 
 ## Usage
 
 Press Ctrl+Shift+P and type "abcjs" to access the available commands.
 
-The main action is "abcjs-vscode: Show Preview".
+Available commands: 
+- `abcjs-vscode: Show Preview`
+- `abcjs-vscode: Print Preview`
+- `abcjs-vscode.export`
 
 ## Requirements
 
