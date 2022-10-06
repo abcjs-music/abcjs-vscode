@@ -19,13 +19,13 @@ function activate(context: VScode.ExtensionContext) {
   outputChannel.show();
 
   // Commands
-  registerCommands(context);
+  registerCommands(context, outputChannel);
 
   // Behaviour
 
   // Update the Preview when code changes.
   vscode.workspace.onDidChangeTextDocument((eventArgs) => {
-    updatePreview(eventArgs);
+    updatePreview(eventArgs, outputChannel);
   });
   vscode.window.onDidChangeActiveTextEditor(async (eventArgs) => {
     if (eventArgs) {
@@ -33,15 +33,18 @@ function activate(context: VScode.ExtensionContext) {
         return;
       }
 
-      updatePreview(eventArgs);
+      updatePreview(eventArgs, outputChannel);
     }
   });
 }
 
-function registerCommands(context: VScode.ExtensionContext) {
+function registerCommands(
+  context: VScode.ExtensionContext,
+  outputChannel: VScode.OutputChannel
+) {
   // Register the command to Show the Viewer.
   let viewer = vscode.commands.registerCommand('abcjs-vscode.showPreview', () =>
-    showPreview(context)
+    showPreview(context, outputChannel)
   );
   context.subscriptions.push(viewer);
 
@@ -94,7 +97,6 @@ function getFileName() {
 function updatePreview(
   eventArgs: VScode.TextEditor | VScode.TextDocumentChangeEvent,
   outputChannel: VScode.OutputChannel
-
 ) {
   if (!vscode.window.activeTextEditor) {
     throw new Error('No active text editor!');
