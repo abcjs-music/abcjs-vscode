@@ -14,16 +14,14 @@ let panel: WebviewPanel | undefined = undefined;
  * @param {vscode.ExtensionContext} context
  */
 function activate(context: VScode.ExtensionContext) {
-  // abcjs preview
+  const outputChannel = vscode.window.createOutputChannel('abcjs-vscode');
+  outputChannel.appendLine('starting abcjs extension...');
+  outputChannel.show();
 
-  const outputChannel = vscode.window.createOutputChannel(
-    'abcjs-vscode errors'
-  );
-  // Register the command to Show the Viewer.
-  let viewer = vscode.commands.registerCommand('abcjs-vscode.showPreview', () =>
-    showPreview(context, outputChannel)
-  );
-  context.subscriptions.push(viewer);
+  // Commands
+  registerCommands(context);
+
+  // Behaviour
 
   // Update the Preview when code changes.
   vscode.workspace.onDidChangeTextDocument((eventArgs) => {
@@ -40,12 +38,28 @@ function activate(context: VScode.ExtensionContext) {
   });
 }
 
+function registerCommands(context: VScode.ExtensionContext) {
+  // Register the command to Show the Viewer.
+  let viewer = vscode.commands.registerCommand('abcjs-vscode.showPreview', () =>
+    showPreview(context)
+  );
+  context.subscriptions.push(viewer);
+
+  // Print command
+  let exportCommand = vscode.commands.registerCommand(
+    'abcjs-vscode.export',
+    () => exportSheet(context)
+  );
+  context.subscriptions.push(exportCommand);
+}
+
 /**
  * open the preview window to the side.
  */
-async function showPreview(context: VScode.ExtensionContext, outputChannel: any) {
-  //console.log('registering the viewer');
-
+async function showPreview(
+  context: VScode.ExtensionContext,
+  outputChannel: VScode.OutputChannel
+) {
   panel = createPanel(context);
 
   const editorContent = getNormalizedEditorContent(
@@ -59,7 +73,9 @@ async function showPreview(context: VScode.ExtensionContext, outputChannel: any)
     try {
       select(message.startChar, message.endChar);
     } catch (error: any) {
-      console.error(error);
+      outputChannel.appendLine(error);
+      outputChannel.show();
+
       vscode.window.showErrorMessage(error);
     }
   });
@@ -69,14 +85,16 @@ function getFileName() {
   const filePath = vscode.window.activeTextEditor
     ? vscode.window.activeTextEditor.document.fileName
     : 'ABC File Not Selected';
-  
+
   const arr = filePath.split(path.sep);
-  
+
   return arr[arr.length - 1];
 }
 
 function updatePreview(
-  eventArgs: VScode.TextEditor | VScode.TextDocumentChangeEvent
+  eventArgs: VScode.TextEditor | VScode.TextDocumentChangeEvent,
+  outputChannel: VScode.OutputChannel
+
 ) {
   if (!vscode.window.activeTextEditor) {
     throw new Error('No active text editor!');
@@ -89,7 +107,7 @@ function updatePreview(
 
   // plaintext is for unsaved files.
   if (language !== 'abc' && language !== 'plaintext') {
-    console.log('language is', language);
+    outputChannel.appendLine(`language is ${language}`);
     return;
   }
 
@@ -123,7 +141,7 @@ async function getHtml(
 
   let html = fileContent.toString();
 
-  // replace variables? It seems to be automatic. Magic!
+  // replace variables? For editorContent, it seems to be automatic. Magic!
   // ${editorContent}
   html = html.replace('${fileName}', fileName);
   //html = html.replace('${title}', fileName);
@@ -146,7 +164,7 @@ function select(start: number, end: number) {
   //editor.document.offsetAt()
   const startPos = editor.document.positionAt(start);
   const endPos = editor.document.positionAt(end);
-  //console.log('positions:', startPos, endPos)
+  //outputChannel.appendLine(`positions: ${startPos}, ${endPos}`)
 
   // vscode.commands.executeCommand("cursorMove", {
   //   to: "down",
@@ -191,6 +209,29 @@ function createPanel(context: VScode.ExtensionContext): WebviewPanel {
     }
   );
   return result;
+}
+
+async function exportSheet(context: vscode.ExtensionContext) {
+  if (vscode.window.activeTextEditor?.document.isUntitled) {
+    vscode.window.showInformationMessage(
+      'Please save document before printing.'
+    );
+  }
+
+  // const html = getWebviewContent(
+  //   getNormalizedEditorContent(vscode.window.activeTextEditor),
+  //   context.extensionPath,
+  //   true
+  // );
+  const html = await getHtml(context, '', context.extensionPath);
+
+  let fs = require('fs');
+  let url = vscode.window.activeTextEditor?.document.fileName + '_print.html';
+  fs.writeFileSync(url, html);
+
+  url = url.replace('\\', '/');
+  url = 'file:///' + url;
+  await vscode.env.openExternal(vscode.Uri.parse(url));
 }
 
 // this method is called when your extension is deactivated
