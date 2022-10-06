@@ -20,7 +20,6 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:abcjs-vscode.helloWorld",
     "onCommand:abcjs-vscode.showPreview"
   ],
   "main": "./out/extension.js",
@@ -29,6 +28,10 @@
       {
         "command": "abcjs-vscode.showPreview",
         "title": "abcjs-vscode: Show Preview"
+      },
+      {
+        "command": "abcjs-vscode.export",
+        "title": "abcjs-vscode: Export Sheet"
       }
     ],
     "languages": [

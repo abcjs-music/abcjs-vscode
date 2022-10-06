@@ -139,6 +139,9 @@
             drawTune(abc)
         }
 
+        /**
+         * Run abcjs, render the score from ABC notation.
+         */
         function drawTune(abcCode) {
             ABCJS.renderAbc('paper', abcCode, options);
 
@@ -173,8 +176,11 @@
         var select = document.querySelector("#tune-selector select")
         select.addEventListener("change", setTune)
 
-        function analyzeContent() {
-            var tuneBook = new ABCJS.TuneBook(abc)
+        /**
+         * Read tunes from the abc content
+         */
+        function analyzeContent(abcCode) {
+            var tuneBook = new ABCJS.TuneBook(abcCode)
             if (tuneBook.tunes.length >= 2) {
                 select.innerHTML = ""
                 var option = document.createElement("option");
@@ -203,8 +209,8 @@
             switch (message.command) {
                 case 'contentChange':
                     if (abc !== message.content) {
-                        abc = message.content;
-                        analyzeContent()
+                        abc = message.content
+                        analyzeContent(abc)
                         drawTune(abc)
                     }
                     break;
@@ -213,7 +219,7 @@
 
         document.addEventListener('DOMContentLoaded', function (event) {
             abc = `${editorContent}`
-            analyzeContent()
+            analyzeContent(abc)
             drawTune(abc)
         });
     </script>

@@ -16,7 +16,7 @@ let panel: WebviewPanel | undefined = undefined;
 function activate(context: VScode.ExtensionContext) {
   const outputChannel = vscode.window.createOutputChannel('abcjs-vscode');
   outputChannel.appendLine('starting abcjs extension...');
-  outputChannel.show();
+  //outputChannel.show();
 
   // Commands
   registerCommands(context, outputChannel);
@@ -65,10 +65,7 @@ async function showPreview(
 ) {
   panel = createPanel(context);
 
-  const editorContent = getNormalizedEditorContent(
-    vscode.window.activeTextEditor
-  );
-  panel.webview.html = await getHtml(context, editorContent, getFileName());
+  panel.webview.html = await getHtml(context, getFileName());
 
   panel.webview.onDidReceiveMessage((message) => {
     // Receiving only the element-selection messages at the moment.
@@ -131,22 +128,24 @@ function updatePreview(
  */
 async function getHtml(
   context: VScode.ExtensionContext,
-  editorContent: string,
   fileName: string
 ) {
+  const editorContent = getNormalizedEditorContent(
+    vscode.window.activeTextEditor
+  );
+
   const onDiskPath = vscode.Uri.file(
     path.join(context.extensionPath, 'res', 'viewer.html')
   );
   //const filePath = path.join(context.extensionPath, 'src', 'viewer.html')
   //const filePath = panel.webview.asWebviewUri(onDiskPath);
   const fileContent = await VScode.workspace.fs.readFile(onDiskPath);
-
   let html = fileContent.toString();
 
-  // replace variables? For editorContent, it seems to be automatic. Magic!
-  // ${editorContent}
+  // replace variables
+  html = html.replace('${editorContent}', editorContent);
   html = html.replace('${fileName}', fileName);
-  //html = html.replace('${title}', fileName);
+  html = html.replace('${title}', fileName);
 
   return html;
 }
@@ -225,13 +224,13 @@ async function exportSheet(context: vscode.ExtensionContext) {
   //   context.extensionPath,
   //   true
   // );
-  const html = await getHtml(context, '', context.extensionPath);
+  const html = await getHtml(context, context.extensionPath);
 
   let fs = require('fs');
-  let url = vscode.window.activeTextEditor?.document.fileName + '_print.html';
+  let url = vscode.window.activeTextEditor?.document.fileName + '.html';
   fs.writeFileSync(url, html);
 
-  url = url.replace('\\', '/');
+  url = url.replaceAll('\\', '/');
   url = 'file:///' + url;
   await vscode.env.openExternal(vscode.Uri.parse(url));
 }
