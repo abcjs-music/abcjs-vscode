@@ -27,8 +27,9 @@ The command `abcjs-vscode: Print Preview` will display a print-ready sheet in a 
 
 ## Usage
 
-The only action available currently is "abcjs-vscode: Show Preview".
-Press Ctrl+Shift+P and type "abcjs" to access it.
+Press Ctrl+Shift+P and type "abcjs" to access the available commands.
+
+The main action is "abcjs-vscode: Show Preview".
 
 ## Requirements
 
@@ -36,7 +37,7 @@ The abcjs library is currently loaded from CDN and not packaged with the extensi
 
 ## Extension Settings
 
-There are currently no settings for the extension. It works on blank new files and existing .abc files.
+There are currently no configuration settings for the extension. It works on blank new files and existing .abc files.
 
 <!--
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
