@@ -66,7 +66,13 @@
         <!-- <h1 class="title">${fileName}</h1> -->
         <fieldset class="options">
             <legend>Options</legend>
-            <label><input id="jazz-chords" class="option" type="checkbox" checked>
+
+            <label>
+                <input id="responsive" class="option" type="checkbox" checked>
+                Responsive
+            </label>
+            <label>
+                <input id="jazz-chords" class="option" type="checkbox" checked>
                 Use Jazz Chord Format
             </label>
             <div>
@@ -121,6 +127,8 @@
         var abc = "";
 
         function optionChanged() {
+            options.responsive = document.getElementById("responsive").checked
+                ? 'resize' : undefined
             options.jazzchords = document.getElementById("jazz-chords").checked
             options.visualTranspose = document.getElementById("transpose").value
             var tablature = document.getElementById("tablature").value
