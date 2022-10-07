@@ -62,15 +62,24 @@
 </head>
 
 <body>
+    <!-- <header>
+        test
+    </header> -->
     <div class="top">
         <!-- <h1 class="title">${fileName}</h1> -->
         <fieldset class="options">
             <legend>Options</legend>
 
-            <label>
-                <input id="responsive" class="option" type="checkbox" checked>
-                Responsive
-            </label>
+            <div>
+                <label>
+                    <input id="responsive" class="option" type="checkbox" checked>
+                    Responsive
+                </label>
+                <label>
+                    <input id="print" class="option" type="checkbox" >
+                    Print
+                </label>
+            </div>
             <label>
                 <input id="jazz-chords" class="option" type="checkbox" checked>
                 Use Jazz Chord Format
@@ -115,22 +124,25 @@
 
         var options = {
             startingTune: 0,
-            responsive: "resize",
             clickListener: clickListener,
+            //responsive: "resize",
+            responsive: getResponsiveValue(),
             format: {
                 gchordfont: '"itim-music,Itim" 20'
             },
             jazzchords: document.getElementById("jazz-chords").checked,
             visualTranspose: 0,
+            print: document.getElementById("print").checked
         }
 
         var abc = "";
 
         function optionChanged() {
-            options.responsive = document.getElementById("responsive").checked
-                ? 'resize' : undefined
+            options.responsive = getResponsiveValue()
+            options.print = document.getElementById("print").checked
             options.jazzchords = document.getElementById("jazz-chords").checked
             options.visualTranspose = document.getElementById("transpose").value
+            
             var tablature = document.getElementById("tablature").value
             switch (tablature) {
                 case "None":
@@ -145,6 +157,11 @@
             }
 
             drawTune(abc)
+        }
+
+        function getResponsiveValue() {
+            return document.getElementById("responsive").checked
+                ? 'resize' : undefined
         }
 
         /**
