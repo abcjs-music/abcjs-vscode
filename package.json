@@ -2,7 +2,7 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "ABC music notation editor, using abcjs library",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "publisher": "alensiljak",
   "author": {
     "name": "Alen Šiljak"
@@ -105,6 +105,12 @@
             "default": true,
             "scope": "resource",
             "markdownDescription": "Jazz style chord symbols formatting. [Documentation](https://paulrosen.github.io/abcjs/visual/render-abc-options.html#jazzchords)"
+          },
+          "abcjs-vscode.sheet.debug": {
+            "type": "boolean",
+            "default": false,
+            "scope": "resource",
+            "description": "Debug options for abcjs."
           },
           "abcjs-vscode.sheet.tablature": {
             "type": "string",

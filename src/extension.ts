@@ -276,11 +276,19 @@ function readConfiguration(): object {
     currentDocument?.uri
   );
 
+  // specific settings
+  const tablatureValue = configuration.get('sheet.tablature');
+  const tablature = tablatureValue ? [{ instrument: tablatureValue }] : undefined;
+
   const options = {
+    // Page Formatting
     oneSvgPerLine: configuration.get('pageFormatting.oneSvgPerLine'),
     responsive: configuration.get('pageFormatting.responsive'),
     print: configuration.get('pageFormatting.print'),
+    // Sheet
+    debug: configuration.get('sheet.debug'),
     jazzchords: configuration.get('sheet.jazzchords'),
+    tablature: tablature
   };
   return options;
 }
@@ -291,7 +299,8 @@ async function updatePreview(
   const editor = getEditor();
 
   if (!editor) {
-    throw new Error('No text editors available!');
+    //throw new Error('No text editors available!');
+    return;
   }
   if (!panel) {
     throw new Error('No preview panel found!');
