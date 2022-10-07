@@ -38,13 +38,15 @@ Available commands:
 - `abcjs-vscode: Print Preview`
 - `abcjs-vscode.export`
 
+The Viewer works both with new text files in the editor and existing `.abc` files.
+
 ## Requirements
 
 The abcjs library is currently loaded from CDN and not packaged with the extension.
 
 ## Extension Settings
 
-There are currently no configuration settings for the extension. It works on blank new files and existing .abc files.
+In VSCode Settings, look for `abcjs vscode` configuration section. Editing the settings will apply them immediately to the Viewer. For convenience, you can arrange the window layout and keep the Settings window open in order to apply the settings to the current sheet preview.
 
 <!--
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.

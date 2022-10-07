@@ -2,7 +2,7 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "ABC music notation editor, using abcjs library",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "publisher": "alensiljak",
   "author": {
     "name": "Alen Šiljak"
@@ -89,7 +89,7 @@
       {
         "title": "Sheet",
         "properties": {
-          "abcjs-vscode.sheet.useJazzChordFormat": {
+          "abcjs-vscode.sheet.jazzchords": {
             "type": "boolean",
             "default": true,
             "scope": "resource",

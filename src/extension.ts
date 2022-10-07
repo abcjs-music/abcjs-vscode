@@ -3,20 +3,21 @@
  */
 import { WebviewPanel } from 'vscode';
 
-import * as VScode from 'vscode';
+//import * as VScode from 'vscode';
+import * as vscode from 'vscode';
 import path = require('path');
 // The module 'vscode' contains the VS Code extensibility API
-import vscode = require('vscode');
+//import vscode = require('vscode');
 import * as os from 'os';
 import { pathToFileURL } from 'url';
 
 let panel: WebviewPanel;
-let outputChannel: VScode.OutputChannel;
+let outputChannel: vscode.OutputChannel;
 
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context: VScode.ExtensionContext) {
+function activate(context: vscode.ExtensionContext) {
   outputChannel = vscode.window.createOutputChannel('abcjs-vscode');
   outputChannel.appendLine('starting abcjs extension...');
   //outputChannel.show();
@@ -25,10 +26,10 @@ function activate(context: VScode.ExtensionContext) {
   registerCommands(context);
 
   // Behaviour
-  registerEvents();
+  registerEvents(context);
 }
 
-function registerCommands(context: VScode.ExtensionContext) {
+function registerCommands(context: vscode.ExtensionContext) {
   // Show Viewer
   let viewer = vscode.commands.registerCommand('abcjs-vscode.showPreview', () =>
     showPreview(context)
@@ -50,25 +51,49 @@ function registerCommands(context: VScode.ExtensionContext) {
   context.subscriptions.push(printCommand);
 }
 
-function registerEvents() {
+function registerEvents(context: vscode.ExtensionContext) {
   // Update the Preview when code changes.
-  vscode.workspace.onDidChangeTextDocument((eventArgs) => {
-    updatePreview(eventArgs, outputChannel);
-  });
-  vscode.window.onDidChangeActiveTextEditor(async (eventArgs) => {
-    if (eventArgs) {
-      if (!panel || !vscode.window.activeTextEditor) {
-        return;
-      }
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument((eventArgs) => {
+      updatePreview(eventArgs);
+    })
+  );
 
-      updatePreview(eventArgs, outputChannel);
-    }
-  });
+  context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor(async (eventArgs) => {
+      if (eventArgs) {
+        if (!panel || !vscode.window.activeTextEditor) {
+          return;
+        }
+
+        updatePreview(eventArgs);
+      }
+    })
+  );
+
+  // Handle configuration changes.
+  // todo: pass the configuration options to the viewer panel.
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      outputChannel.appendLine('configuration changed');
+
+      //if (e.affectsConfiguration('abcjs-vscode.pageFormatting.print'))
+
+      // read configuration options and send all to the Viewer
+      const options = readConfiguration();
+
+      panel.webview.postMessage({
+        command: 'configurationChange',
+        content: options,
+      });
+    })
+  );
 }
 
-function initializePanel(context: VScode.ExtensionContext) {
+function initializePanel(context: vscode.ExtensionContext) {
   panel = createPanel(context);
 
+  // Receiving messages from the Viewer.
   panel.webview.onDidReceiveMessage((message) => {
     // Receiving only the element-selection messages at the moment.
     // Select the character in the editor.
@@ -86,7 +111,7 @@ function initializePanel(context: VScode.ExtensionContext) {
 /**
  * open the preview window to the side.
  */
-async function showPreview(context: VScode.ExtensionContext) {
+async function showPreview(context: vscode.ExtensionContext) {
   initializePanel(context);
 
   panel.webview.html = await getHtml(context, getFileName());
@@ -139,9 +164,26 @@ function getTempFileForExport() {
   return filePath;
 }
 
+/**
+ * Read the configuration settings and prepare abcjs Options object.
+ */
+function readConfiguration(): object {
+  const currentDocument = vscode.window.activeTextEditor?.document;
+  const configuration = vscode.workspace.getConfiguration(
+    'abcjs-vscode',
+    currentDocument?.uri
+  );
+
+  const options = {
+    responsive: configuration.get('pageFormatting.responsive'),
+    print: configuration.get('pageFormatting.print'),
+    jazzchords: configuration.get('sheet.jazzchords')
+  };
+  return options;
+}
+
 function updatePreview(
-  eventArgs: VScode.TextEditor | VScode.TextDocumentChangeEvent,
-  outputChannel: VScode.OutputChannel
+  eventArgs: vscode.TextEditor | vscode.TextDocumentChangeEvent
 ) {
   if (!vscode.window.activeTextEditor) {
     throw new Error('No active text editor!');
@@ -154,7 +196,7 @@ function updatePreview(
 
   // plaintext is for unsaved files.
   if (language !== 'abc' && language !== 'plaintext') {
-    outputChannel.appendLine(`language is ${language}`);
+    //outputChannel.appendLine(`language is ${language}`);
     return;
   }
 
@@ -174,7 +216,7 @@ function updatePreview(
  * Generate the Preview HTML.
  * @param {String} editorContent
  */
-async function getHtml(context: VScode.ExtensionContext, fileName: string) {
+async function getHtml(context: vscode.ExtensionContext, fileName: string) {
   const editorContent = getCurrentEditorContent();
 
   const filePath = path.join(context.extensionPath, 'res', 'viewer.html');
@@ -217,7 +259,7 @@ function select(start: number, end: number) {
   editor.revealRange(editor.selection);
 }
 
-function getNormalizedEditorContent(editor?: VScode.TextEditor) {
+function getNormalizedEditorContent(editor?: vscode.TextEditor) {
   if (!editor) {
     return '';
   }
@@ -234,7 +276,7 @@ function getNormalizedEditorContent(editor?: VScode.TextEditor) {
   return content;
 }
 
-function createPanel(context: VScode.ExtensionContext): WebviewPanel {
+function createPanel(context: vscode.ExtensionContext): WebviewPanel {
   //vscode.window.showInformationMessage('Opening the preview in abcjs editor!');
   var result = vscode.window.createWebviewPanel(
     'abcjsPreview',
@@ -289,8 +331,8 @@ async function printPreview(context: vscode.ExtensionContext) {
   let savePath = getHtmlFilenameForExport();
   const url = pathToFileURL(savePath).toString();
   const uri = vscode.Uri.parse(url);
-  var content = Uint8Array.from(html.split('').map(x => x.charCodeAt(0)));
-  await VScode.workspace.fs.writeFile(uri, content);
+  var content = Uint8Array.from(html.split('').map((x) => x.charCodeAt(0)));
+  await vscode.workspace.fs.writeFile(uri, content);
 
   // open browser
   await vscode.env.openExternal(uri);
@@ -299,7 +341,7 @@ async function printPreview(context: vscode.ExtensionContext) {
 async function loadFileContent(filePath: string): Promise<string> {
   const onDiskPath = vscode.Uri.file(filePath);
 
-  const fileContent = await VScode.workspace.fs.readFile(onDiskPath);
+  const fileContent = await vscode.workspace.fs.readFile(onDiskPath);
 
   let readableContent = fileContent.toString();
   return readableContent;
