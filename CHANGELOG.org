@@ -4,6 +4,10 @@ All notable changes to the "abcjs-editor" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+** 2.4.1
+
+Added showDebug setting.
+
 ** 2.4.0
 
 Added Export HTML command.

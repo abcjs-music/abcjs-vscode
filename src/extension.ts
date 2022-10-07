@@ -277,8 +277,9 @@ function readConfiguration(): object {
   );
 
   // specific settings
-  const tablatureValue = configuration.get('sheet.tablature');
-  const tablature = tablatureValue ? [{ instrument: tablatureValue }] : undefined;
+  const tablatureValue: string | undefined = configuration.get('sheet.tablature');
+  const tablature = tablatureValue 
+    ? [{ instrument: tablatureValue.toLowerCase() }] : undefined;
 
   const options = {
     // Page Formatting
@@ -286,7 +287,7 @@ function readConfiguration(): object {
     responsive: configuration.get('pageFormatting.responsive'),
     print: configuration.get('pageFormatting.print'),
     // Sheet
-    debug: configuration.get('sheet.debug'),
+    showDebug: configuration.get('sheet.showDebug') ? ['grid', 'box'] : [],
     jazzchords: configuration.get('sheet.jazzchords'),
     tablature: tablature
   };

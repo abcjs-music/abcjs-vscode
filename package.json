@@ -106,7 +106,7 @@
             "scope": "resource",
             "markdownDescription": "Jazz style chord symbols formatting. [Documentation](https://paulrosen.github.io/abcjs/visual/render-abc-options.html#jazzchords)"
           },
-          "abcjs-vscode.sheet.debug": {
+          "abcjs-vscode.sheet.showDebug": {
             "type": "boolean",
             "default": false,
             "scope": "resource",
