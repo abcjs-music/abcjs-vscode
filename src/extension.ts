@@ -99,7 +99,9 @@ function registerEvents(context: vscode.ExtensionContext) {
 
 async function requestSvgExport() {
   if (!panel) {
-    vscode.window.showWarningMessage('The SVG Export requires the preview panel to render content.');
+    vscode.window.showWarningMessage(
+      'The SVG Export requires the preview panel to render content.'
+    );
     return;
   }
   // Send a message to the Viewer, requesting the current SVG.
@@ -119,7 +121,7 @@ function initializePanel(context: vscode.ExtensionContext) {
 
       case 'svgExport':
         const svg = message.content;
-        console.log(svg);
+        exportSvg(svg);
         break;
     }
 
@@ -138,7 +140,18 @@ function initializePanel(context: vscode.ExtensionContext) {
 async function showPreview(context: vscode.ExtensionContext) {
   initializePanel(context);
 
-  panel.webview.html = await getHtml(context, getFileName());
+  panel.webview.html = await getHtml(context, getFileNameFromEditor());
+}
+
+function exportSvg(svg: string) {
+  const editorFilePath = getEditorFilePath();
+  // getEditorFilename()
+  //let filePath = getTempFilePath(editorFilename + '.svg');
+  const filePath = editorFilePath + '.svg';
+
+  saveToFile(filePath, svg);
+
+  vscode.window.showInformationMessage('SVG exported to', filePath);
 }
 
 function getCurrentEditorContent(): string {
@@ -148,14 +161,18 @@ function getCurrentEditorContent(): string {
   return editorContent;
 }
 
-function getFileName() {
+function getEditorFilePath(): string {
   const editor = getEditor();
   if (!editor) {
     return '';
   }
 
   const filePath = editor?.document.fileName;
+  return filePath;
+}
 
+function getFileNameFromEditor() {
+  const filePath = getEditorFilePath();
   const arr = filePath.split(path.sep);
 
   return arr[arr.length - 1];
@@ -170,7 +187,7 @@ function getHtmlFilenameForExport(): string {
 
   // if document is untitled, use tmp file.
   if (editor?.document.isUntitled) {
-    filePath = getTempFileForExport();
+    filePath = getTempFilenameForExport();
   } else {
     // existing file?
     filePath = editor?.document.fileName as string;
@@ -179,16 +196,21 @@ function getHtmlFilenameForExport(): string {
     // Depending on the window from which the command was executed, this might be
     // just a title, an invalid path.
     if (!path.isAbsolute) {
-      filePath = getTempFileForExport();
+      filePath = getTempFilenameForExport();
     }
   }
 
   return filePath;
 }
 
-function getTempFileForExport() {
+function getTempFilenameForExport() {
+  const filePath = getTempFilePath('abcjs-vscode-printPreview.html');
+  return filePath;
+}
+
+function getTempFilePath(filename: string) {
   const tempDir = os.tmpdir();
-  const filePath = path.join(tempDir, 'abcjs-vscode-printPreview.html');
+  const filePath = path.join(tempDir, filename);
   return filePath;
 }
 
@@ -239,7 +261,7 @@ async function updatePreview(
     content: editorContent,
   });
 
-  panel.title = 'abc: ' + getFileName();
+  panel.title = 'abc: ' + getFileNameFromEditor();
 }
 
 /**
@@ -342,14 +364,17 @@ async function exportSheet(context: vscode.ExtensionContext) {
   }
 
   const html = await getHtml(context, context.extensionPath);
+  const filePath = editor?.document.fileName + '.html';
+  saveToFile(filePath, html);
 
-  let fs = require('fs');
-  let url = editor?.document.fileName + '.html';
-  fs.writeFileSync(url, html);
-
-  url = url.replaceAll('\\', '/');
+  let url = filePath.replaceAll('\\', '/');
   url = 'file:///' + url;
   await vscode.env.openExternal(vscode.Uri.parse(url));
+}
+
+function saveToFile(filePath: string, content: string) {
+  let fs = require('fs');
+  fs.writeFileSync(filePath, content);
 }
 
 /**
