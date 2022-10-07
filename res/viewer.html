@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
+    <title>ABC Preview</title>
     <style>
         @import url(https://fonts.googleapis.com/css?family=Itim);
 
@@ -62,44 +62,20 @@
 </head>
 
 <body>
-    <!-- <header>
-        test
-    </header> -->
     <div class="top">
         <!-- <h1 class="title">${fileName}</h1> -->
         <fieldset class="options">
             <legend>Options</legend>
-
-            <div>
-                <label>
-                    <input id="responsive" class="option" type="checkbox" checked>
-                    Responsive
-                </label>
-                <label>
-                    <input id="print" class="option" type="checkbox">
-                    Print
-                </label>
-            </div>
-            <label>
-                <input id="jazz-chords" class="option" type="checkbox" checked>
-                Use Jazz Chord Format
-            </label>
             <div>
                 <label>
                     <span class="width-label">Transpose:</span>
                     <input id="transpose" class="option" type="number" min="-12" max="12" value="0"> (half-steps)
                 </label>
                 <label>
-                    <input id="output-transposition" class="option" type="checkbox" checked>Show ABC
+                    <input id="output-transposition" class="option" type="checkbox" checked>
+                    Show ABC
                 </label>
             </div>
-            <label>
-                <span class="width-label">Tablature:</span>
-                <select id="tablature" class="option">
-                    <option>None</option>
-                    <option>Violin</option>
-                    <option>Guitar</option>
-                </select></label>
             <label id="tune-selector"><span class="width-label">Tune:</span><select></select>
             </label>
         </fieldset>
@@ -110,58 +86,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/abcjs@6.1.3/dist/abcjs-basic-min.js"></script>
     <script>
-        const vscode = acquireVsCodeApi();
-
-        function clickListener(abcElem, tuneNumber, classes) {
-            vscode.postMessage({
-                //abcElem: abcElem,
-                startChar: abcElem.startChar,
-                endChar: abcElem.endChar,
-                tuneNumber: tuneNumber,
-                classes: classes
-            })
+        let vscode = null;
+        if (window.acquireVsCodeApi) {
+            vscode = acquireVsCodeApi();
         }
 
         var options = {
             startingTune: 0,
             clickListener: clickListener,
-            //responsive: "resize",
-            responsive: getResponsiveValue(),
+            responsive: "resize",
             format: {
                 gchordfont: '"itim-music,Itim" 20'
             },
-            jazzchords: document.getElementById("jazz-chords").checked,
-            visualTranspose: 0,
-            print: document.getElementById('print').checked
+            visualTranspose: 0
         }
 
-        var abc = '';
+        var abc = `{editorContent}`;
 
         function optionChanged() {
-            options.responsive = getResponsiveValue()
-            options.print = document.getElementById('print').checked
-            options.jazzchords = document.getElementById('jazz-chords').checked
             options.visualTranspose = document.getElementById('transpose').value
 
-            var tablature = document.getElementById("tablature").value
-            switch (tablature) {
-                case 'None':
-                    delete options.tablature
-                    break;
-                case 'Violin':
-                    options.tablature = [{ instrument: 'violin' }]
-                    break;
-                case 'Guitar':
-                    options.tablature = [{ instrument: 'guitar' }]
-                    break;
-            }
-
             drawTune(abc)
-        }
-
-        function getResponsiveValue() {
-            return document.getElementById('responsive').checked
-                ? 'resize' : undefined
         }
 
         /**
@@ -188,10 +133,14 @@
             }
         }
 
-        var setTune = function () {
+        function setTune() {
             options.startingTune = this.value
             drawTune(abc)
         }
+
+        // todo: rearrange this to not sit in the global namespace.
+        var select = document.querySelector("#tune-selector select");
+        select.addEventListener("change", setTune);
 
         /**
          * Read tunes from the abc content
@@ -221,6 +170,17 @@
             }
         }
 
+        function clickListener(abcElem, tuneNumber, classes) {
+            vscode.postMessage({
+                name: 'click',
+                //abcElem: abcElem,
+                startChar: abcElem.startChar,
+                endChar: abcElem.endChar,
+                tuneNumber: tuneNumber,
+                classes: classes
+            })
+        }
+
         window.addEventListener('message', event => {
             const message = event.data; // The JSON data our extension sent
 
@@ -232,24 +192,29 @@
                         drawTune(abc);
                     }
                     break;
+
                 case 'configurationChange':
                     options = message.content
                     drawTune(abc);
                     break;
+
+                case 'requestSvg':
+                    // Send the current rendering to the Editor.
+                    const svg = document.querySelectorAll('#paper svg');
+                    vscode.postMessage({
+                        name: 'svgExport',
+                        content: svg
+                    });
+                    break
             }
         });
 
         document.addEventListener('DOMContentLoaded', function (event) {
-            console.log('yo');
             var optionEls = document.querySelectorAll(".option");
             for (var i = 0; i < optionEls.length; i++) {
                 document.addEventListener("change", optionChanged);
             }
 
-            var select = document.querySelector("#tune-selector select");
-            select.addEventListener("change", setTune);
-
-            abc = `${editorContent}`;
             analyzeContent(abc);
             drawTune(abc);
         });

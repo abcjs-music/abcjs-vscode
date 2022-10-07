@@ -43,6 +43,13 @@ function registerCommands(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(exportCommand);
 
+  // Export SVG
+  let exportSvgCommand = vscode.commands.registerCommand(
+    'abcjs-vscode.exportSvg',
+    () => requestSvgExport()
+  );
+  context.subscriptions.push(exportSvgCommand);
+
   // Print Preview
   let printCommand = vscode.commands.registerCommand(
     'abcjs-vscode.printPreview',
@@ -74,10 +81,10 @@ function registerEvents(context: vscode.ExtensionContext) {
   // Handle configuration changes.
   // todo: pass the configuration options to the viewer panel.
   context.subscriptions.push(
-    vscode.workspace.onDidChangeConfiguration((e) => {
-      outputChannel.appendLine('configuration changed');
-
+    vscode.workspace.onDidChangeConfiguration(() => {
+      // receives an event (e)
       //if (e.affectsConfiguration('abcjs-vscode.pageFormatting.print'))
+      outputChannel.appendLine('configuration changed');
 
       // read configuration options and send all to the Viewer
       const options = readConfiguration();
@@ -90,21 +97,34 @@ function registerEvents(context: vscode.ExtensionContext) {
   );
 }
 
+function requestSvgExport() {
+  // Send a message to the Viewer, requesting the current SVG.
+  panel.webview.postMessage({ command: 'requestSvg' });
+}
+
 function initializePanel(context: vscode.ExtensionContext) {
   panel = createPanel(context);
 
   // Receiving messages from the Viewer.
   panel.webview.onDidReceiveMessage((message) => {
-    // Receiving only the element-selection messages at the moment.
-    // Select the character in the editor.
-    try {
-      select(message.startChar, message.endChar);
-    } catch (error: any) {
-      outputChannel.appendLine(error);
-      outputChannel.show();
+    switch (message.name) {
+      case 'click':
+        // Select the character in the editor.
+        select(message.startChar, message.endChar);
+        break;
 
-      vscode.window.showErrorMessage(error);
+      case 'svgExport':
+        const svg = message.content;
+        console.log(svg);
+        break;
     }
+
+    // try {
+    // } catch (error: any) {
+    //   outputChannel.appendLine(error);
+    //   outputChannel.show();
+    //   vscode.window.showErrorMessage(error);
+    // }
   });
 }
 
@@ -118,16 +138,19 @@ async function showPreview(context: vscode.ExtensionContext) {
 }
 
 function getCurrentEditorContent(): string {
-  const editorContent = getNormalizedEditorContent(
-    vscode.window.activeTextEditor
-  );
+  const editor = getEditor();
+
+  const editorContent = getNormalizedEditorContent(editor);
   return editorContent;
 }
 
 function getFileName() {
-  const filePath = vscode.window.activeTextEditor
-    ? vscode.window.activeTextEditor.document.fileName
-    : 'ABC File Not Selected';
+  const editor = getEditor();
+  if (!editor) {
+    return null;
+  }
+
+  const filePath = editor?.document.fileName;
 
   const arr = filePath.split(path.sep);
 
@@ -139,13 +162,14 @@ function getFileName() {
  */
 function getHtmlFilenameForExport(): string {
   let filePath: string;
+  const editor = getEditor();
 
   // if document is untitled, use tmp file.
-  if (vscode.window.activeTextEditor?.document.isUntitled) {
+  if (editor?.document.isUntitled) {
     filePath = getTempFileForExport();
   } else {
     // existing file?
-    filePath = vscode.window.activeTextEditor?.document.fileName as string;
+    filePath = editor?.document.fileName as string;
     filePath += '.html';
 
     // Depending on the window from which the command was executed, this might be
@@ -168,7 +192,8 @@ function getTempFileForExport() {
  * Read the configuration settings and prepare abcjs Options object.
  */
 function readConfiguration(): object {
-  const currentDocument = vscode.window.activeTextEditor?.document;
+  const editor = getEditor();
+  const currentDocument = editor?.document;
   const configuration = vscode.workspace.getConfiguration(
     'abcjs-vscode',
     currentDocument?.uri
@@ -178,7 +203,7 @@ function readConfiguration(): object {
     oneSvgPerLine: configuration.get('pageFormatting.oneSvgPerLine'),
     responsive: configuration.get('pageFormatting.responsive'),
     print: configuration.get('pageFormatting.print'),
-    jazzchords: configuration.get('sheet.jazzchords')
+    jazzchords: configuration.get('sheet.jazzchords'),
   };
   return options;
 }
@@ -186,8 +211,10 @@ function readConfiguration(): object {
 function updatePreview(
   eventArgs: vscode.TextEditor | vscode.TextDocumentChangeEvent
 ) {
-  if (!vscode.window.activeTextEditor) {
-    throw new Error('No active text editor!');
+  const editor = getEditor();
+
+  if (!editor) {
+    throw new Error('No text editors available!');
   }
   if (!panel) {
     throw new Error('No preview panel found!');
@@ -201,9 +228,7 @@ function updatePreview(
     return;
   }
 
-  const editorContent = getNormalizedEditorContent(
-    vscode.window.activeTextEditor
-  );
+  const editorContent = getNormalizedEditorContent(editor);
 
   panel.webview.postMessage({
     command: 'contentChange',
@@ -225,11 +250,20 @@ async function getHtml(context: vscode.ExtensionContext, fileName: string) {
   let html = await loadFileContent(filePath);
 
   // replace variables
-  html = html.replace('${editorContent}', editorContent);
+  html = html.replace('{editorContent}', editorContent);
   html = html.replace('${fileName}', fileName);
   html = html.replace('${title}', fileName);
 
   return html;
+}
+
+function getEditor() {
+  let editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    // Take the first visible one?!
+    editor = vscode.window.visibleTextEditors[0];
+  }
+  return editor;
 }
 
 /**
@@ -238,11 +272,7 @@ async function getHtml(context: vscode.ExtensionContext, fileName: string) {
  * @param {Number} end
  */
 function select(start: number, end: number) {
-  let editor = vscode.window.activeTextEditor;
-  if (!editor) {
-    // Take the first visible one?!
-    editor = vscode.window.visibleTextEditors[0];
-  }
+  const editor = getEditor();
 
   //editor.document.offsetAt()
   const startPos = editor.document.positionAt(start);
@@ -299,7 +329,9 @@ function createPanel(context: vscode.ExtensionContext): WebviewPanel {
  * @param context vs code context
  */
 async function exportSheet(context: vscode.ExtensionContext) {
-  if (vscode.window.activeTextEditor?.document.isUntitled) {
+  const editor = getEditor();
+
+  if (editor?.document.isUntitled) {
     vscode.window.showInformationMessage(
       'Please save document before exporting.'
     );
@@ -308,7 +340,7 @@ async function exportSheet(context: vscode.ExtensionContext) {
   const html = await getHtml(context, context.extensionPath);
 
   let fs = require('fs');
-  let url = vscode.window.activeTextEditor?.document.fileName + '.html';
+  let url = editor?.document.fileName + '.html';
   fs.writeFileSync(url, html);
 
   url = url.replaceAll('\\', '/');

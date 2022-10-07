@@ -22,6 +22,7 @@
   "activationEvents": [
     "onCommand:abcjs-vscode.showPreview",
     "onCommand:abcjs-vscode.export",
+    "onCommand:abcjs-vscode.exportSvg",
     "onCommand:abcjs-vscode.printPreview"
   ],
   "main": "./out/extension.js",
