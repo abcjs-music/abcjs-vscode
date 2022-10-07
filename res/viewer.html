@@ -76,7 +76,7 @@
                     Responsive
                 </label>
                 <label>
-                    <input id="print" class="option" type="checkbox" >
+                    <input id="print" class="option" type="checkbox">
                     Print
                 </label>
             </div>
@@ -132,27 +132,27 @@
             },
             jazzchords: document.getElementById("jazz-chords").checked,
             visualTranspose: 0,
-            print: document.getElementById("print").checked
+            print: document.getElementById('print').checked
         }
 
-        var abc = "";
+        var abc = '';
 
         function optionChanged() {
             options.responsive = getResponsiveValue()
-            options.print = document.getElementById("print").checked
-            options.jazzchords = document.getElementById("jazz-chords").checked
-            options.visualTranspose = document.getElementById("transpose").value
-            
+            options.print = document.getElementById('print').checked
+            options.jazzchords = document.getElementById('jazz-chords').checked
+            options.visualTranspose = document.getElementById('transpose').value
+
             var tablature = document.getElementById("tablature").value
             switch (tablature) {
-                case "None":
+                case 'None':
                     delete options.tablature
                     break;
-                case "Violin":
-                    options.tablature = [{ instrument: "violin" }]
+                case 'Violin':
+                    options.tablature = [{ instrument: 'violin' }]
                     break;
-                case "Guitar":
-                    options.tablature = [{ instrument: "guitar" }]
+                case 'Guitar':
+                    options.tablature = [{ instrument: 'guitar' }]
                     break;
             }
 
@@ -160,7 +160,7 @@
         }
 
         function getResponsiveValue() {
-            return document.getElementById("responsive").checked
+            return document.getElementById('responsive').checked
                 ? 'resize' : undefined
         }
 
@@ -193,19 +193,12 @@
             drawTune(abc)
         }
 
-        var optionEls = document.querySelectorAll(".option")
-        for (var i = 0; i < optionEls.length; i++) {
-            document.addEventListener("change", optionChanged)
-        }
-
-        var select = document.querySelector("#tune-selector select")
-        select.addEventListener("change", setTune)
-
         /**
          * Read tunes from the abc content
          */
         function analyzeContent(abcCode) {
             var tuneBook = new ABCJS.TuneBook(abcCode)
+
             if (tuneBook.tunes.length >= 2) {
                 select.innerHTML = ""
                 var option = document.createElement("option");
@@ -234,18 +227,27 @@
             switch (message.command) {
                 case 'contentChange':
                     if (abc !== message.content) {
-                        abc = message.content
-                        analyzeContent(abc)
-                        drawTune(abc)
+                        abc = message.content;
+                        analyzeContent(abc);
+                        drawTune(abc);
                     }
                     break;
             }
         });
 
         document.addEventListener('DOMContentLoaded', function (event) {
-            abc = `${editorContent}`
-            analyzeContent(abc)
-            drawTune(abc)
+            console.log('yo');
+            var optionEls = document.querySelectorAll(".option");
+            for (var i = 0; i < optionEls.length; i++) {
+                document.addEventListener("change", optionChanged);
+            }
+
+            var select = document.querySelector("#tune-selector select");
+            select.addEventListener("change", setTune);
+
+            abc = `${editorContent}`;
+            analyzeContent(abc);
+            drawTune(abc);
         });
     </script>
 </body>
