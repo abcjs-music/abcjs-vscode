@@ -200,10 +200,12 @@
 
                 case 'requestSvg':
                     // Send the current rendering to the Editor.
-                    const svg = document.querySelectorAll('#paper svg');
+                    const svg = document.querySelectorAll('#paper svg')[0];
+                    const svgString = svg.outerHTML;
+
                     vscode.postMessage({
                         name: 'svgExport',
-                        content: svg
+                        content: svgString
                     });
                     break
             }

@@ -25,9 +25,11 @@ This command will display a print-ready sheet in a browser. There you can print 
 
 ![Print Preview](https://imgur.com/4enTxxd.png)
 
-### HTML Export
+### Export
 
 The Export command will export an HTML page with the rendered score sheet.
+
+The Export SVG command will export the score sheet as SVG.
 
 ## Usage
 
@@ -37,6 +39,7 @@ Available commands:
 - `abcjs-vscode: Show Preview`
 - `abcjs-vscode: Print Preview`
 - `abcjs-vscode.export`
+- `abcjs-vscode.exportSvg`
 
 The Viewer works both with new text files in the editor and existing `.abc` files.
 

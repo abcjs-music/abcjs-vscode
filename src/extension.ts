@@ -81,7 +81,7 @@ function registerEvents(context: vscode.ExtensionContext) {
   // Handle configuration changes.
   // todo: pass the configuration options to the viewer panel.
   context.subscriptions.push(
-    vscode.workspace.onDidChangeConfiguration(() => {
+    vscode.workspace.onDidChangeConfiguration(async () => {
       // receives an event (e)
       //if (e.affectsConfiguration('abcjs-vscode.pageFormatting.print'))
       outputChannel.appendLine('configuration changed');
@@ -89,7 +89,7 @@ function registerEvents(context: vscode.ExtensionContext) {
       // read configuration options and send all to the Viewer
       const options = readConfiguration();
 
-      panel.webview.postMessage({
+      await panel.webview.postMessage({
         command: 'configurationChange',
         content: options,
       });
@@ -97,9 +97,13 @@ function registerEvents(context: vscode.ExtensionContext) {
   );
 }
 
-function requestSvgExport() {
+async function requestSvgExport() {
+  if (!panel) {
+    vscode.window.showWarningMessage('The SVG Export requires the preview panel to render content.');
+    return;
+  }
   // Send a message to the Viewer, requesting the current SVG.
-  panel.webview.postMessage({ command: 'requestSvg' });
+  await panel.webview.postMessage({ command: 'requestSvg' });
 }
 
 function initializePanel(context: vscode.ExtensionContext) {
@@ -147,7 +151,7 @@ function getCurrentEditorContent(): string {
 function getFileName() {
   const editor = getEditor();
   if (!editor) {
-    return null;
+    return '';
   }
 
   const filePath = editor?.document.fileName;
@@ -208,7 +212,7 @@ function readConfiguration(): object {
   return options;
 }
 
-function updatePreview(
+async function updatePreview(
   eventArgs: vscode.TextEditor | vscode.TextDocumentChangeEvent
 ) {
   const editor = getEditor();
@@ -230,7 +234,7 @@ function updatePreview(
 
   const editorContent = getNormalizedEditorContent(editor);
 
-  panel.webview.postMessage({
+  await panel.webview.postMessage({
     command: 'contentChange',
     content: editorContent,
   });
