@@ -175,6 +175,7 @@ function readConfiguration(): object {
   );
 
   const options = {
+    oneSvgPerLine: configuration.get('pageFormatting.oneSvgPerLine'),
     responsive: configuration.get('pageFormatting.responsive'),
     print: configuration.get('pageFormatting.print'),
     jazzchords: configuration.get('sheet.jazzchords')
