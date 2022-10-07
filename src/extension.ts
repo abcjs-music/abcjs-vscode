@@ -3,16 +3,16 @@
  */
 import { WebviewPanel } from 'vscode';
 
-//import * as VScode from 'vscode';
 import * as vscode from 'vscode';
 import path = require('path');
 // The module 'vscode' contains the VS Code extensibility API
-//import vscode = require('vscode');
 import * as os from 'os';
 import { pathToFileURL } from 'url';
 
 let panel: WebviewPanel;
 let outputChannel: vscode.OutputChannel;
+let svgHandler: Function; // the function that receives the SVG
+let _context: vscode.ExtensionContext;
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -21,6 +21,8 @@ function activate(context: vscode.ExtensionContext) {
   outputChannel = vscode.window.createOutputChannel('abcjs-vscode');
   outputChannel.appendLine('starting abcjs extension...');
   //outputChannel.show();
+
+  _context = context;
 
   // Commands
   registerCommands(context);
@@ -38,8 +40,8 @@ function registerCommands(context: vscode.ExtensionContext) {
 
   // Export
   let exportCommand = vscode.commands.registerCommand(
-    'abcjs-vscode.export',
-    () => exportSheet(context)
+    'abcjs-vscode.exportHtml',
+    () => requestHtmlExport()
   );
   context.subscriptions.push(exportCommand);
 
@@ -97,13 +99,32 @@ function registerEvents(context: vscode.ExtensionContext) {
   );
 }
 
-async function requestSvgExport() {
+async function requestHtmlExport() {
   if (!panel) {
     vscode.window.showWarningMessage(
-      'The SVG Export requires the preview panel to render content.'
+      'The HTML Export requires the preview panel to be open, to render content.'
     );
     return;
   }
+
+  // set the receiving handler
+  svgHandler = exportHtml;
+
+  // Send a message to the Viewer, requesting the current SVG.
+  await panel.webview.postMessage({ command: 'requestSvg' });
+}
+
+async function requestSvgExport() {
+  if (!panel) {
+    vscode.window.showWarningMessage(
+      'The SVG Export requires the preview panel to be open, to render content.'
+    );
+    return;
+  }
+
+  // set the receiving handler
+  svgHandler = exportSvg;
+
   // Send a message to the Viewer, requesting the current SVG.
   await panel.webview.postMessage({ command: 'requestSvg' });
 }
@@ -121,7 +142,7 @@ function initializePanel(context: vscode.ExtensionContext) {
 
       case 'svgExport':
         const svg = message.content;
-        exportSvg(svg);
+        svgHandler(svg);
         break;
     }
 
@@ -141,6 +162,36 @@ async function showPreview(context: vscode.ExtensionContext) {
   initializePanel(context);
 
   panel.webview.html = await getHtml(context, getFileNameFromEditor());
+}
+
+/**
+ * Export command. Render the sheet in HTML and open in a browser.
+ * @param context vs code context
+ */
+async function exportHtml(svg: string) {
+  // if (editor?.document.isUntitled) {
+  //   vscode.window.showInformationMessage(
+  //     'Please save document before exporting.'
+  //   );
+  // }
+
+  // generate HTML with the SVG inside.
+  
+  // load HTML template
+  const templatePath = path.join(_context.extensionPath, 'res', 'export.html');
+  let html = await loadFileContent(templatePath);
+  html = html.replace('{{body}}', svg);
+  
+  const editorFilePath = getEditorFilePath();
+  const filePath = editorFilePath + '.html';
+  saveToFile(filePath, html);
+
+  vscode.window.showInformationMessage('HTML exported to', filePath);
+
+  // Open browser.
+  let url = filePath.replaceAll('\\', '/');
+  url = 'file:///' + url;
+  await vscode.env.openExternal(vscode.Uri.parse(url));
 }
 
 function exportSvg(svg: string) {
@@ -350,28 +401,6 @@ function createPanel(context: vscode.ExtensionContext): WebviewPanel {
   return result;
 }
 
-/**
- * Export command. Render the sheet in HTML and open in a browser.
- * @param context vs code context
- */
-async function exportSheet(context: vscode.ExtensionContext) {
-  const editor = getEditor();
-
-  if (editor?.document.isUntitled) {
-    vscode.window.showInformationMessage(
-      'Please save document before exporting.'
-    );
-  }
-
-  const html = await getHtml(context, context.extensionPath);
-  const filePath = editor?.document.fileName + '.html';
-  saveToFile(filePath, html);
-
-  let url = filePath.replaceAll('\\', '/');
-  url = 'file:///' + url;
-  await vscode.env.openExternal(vscode.Uri.parse(url));
-}
-
 function saveToFile(filePath: string, content: string) {
   let fs = require('fs');
   fs.writeFileSync(filePath, content);
@@ -387,7 +416,7 @@ async function printPreview(context: vscode.ExtensionContext) {
 
   // add content
   const editorContent = getCurrentEditorContent();
-  html = html.replace('${abc}', editorContent);
+  html = html.replace('{{body}}', editorContent);
 
   // save
   let savePath = getHtmlFilenameForExport();

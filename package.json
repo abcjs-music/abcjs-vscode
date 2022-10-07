@@ -2,7 +2,7 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "ABC music notation editor, using abcjs library",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "publisher": "alensiljak",
   "author": {
     "name": "Alen Šiljak"
@@ -21,7 +21,7 @@
   ],
   "activationEvents": [
     "onCommand:abcjs-vscode.showPreview",
-    "onCommand:abcjs-vscode.export",
+    "onCommand:abcjs-vscode.exportHtml",
     "onCommand:abcjs-vscode.exportSvg",
     "onCommand:abcjs-vscode.printPreview"
   ],
@@ -33,8 +33,8 @@
         "title": "abcjs-vscode: Show Preview"
       },
       {
-        "command": "abcjs-vscode.export",
-        "title": "abcjs-vscode: Export Sheet"
+        "command": "abcjs-vscode.exportHtml",
+        "title": "abcjs-vscode: Export Sheet to HTML"
       },
       {
         "command": "abcjs-vscode.exportSvg",
