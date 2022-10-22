@@ -1,8 +1,8 @@
 # abcjs-vscode
 
-This is an editor for the ABC music notation, utilizing [abcjs](https://abcjs.net/) library.
+This is an editor for the ABC music notation, powered by the [abcjs](https://abcjs.net/) library.
 
-ABC notation is the "Markdown for music". Learn more at https://abcnotation.com/.
+ABC notation - 🔤 - is the "Markdown for music". Learn more at https://abcnotation.com/.
 
 Available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=alensiljak.abcjs-vscode) or through the Extensions panel in VS Code.
 
