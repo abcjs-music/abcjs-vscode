@@ -2,9 +2,9 @@
 
 This is an editor for the ABC music notation, powered by the [abcjs](https://abcjs.net/) library.
 
-ABC notation - 🔤 - is the "Markdown for music". Learn more at https://abcnotation.com/.
+It is an extension for Visual Studio Code and is available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=alensiljak.abcjs-vscode) or through the Extensions panel in VS Code.
 
-Available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=alensiljak.abcjs-vscode) or through the Extensions panel in VS Code.
+ABC notation - 🔤 - is known as the "Markdown for music". Learn more at https://abcnotation.com/.
 
 ## Features
 
