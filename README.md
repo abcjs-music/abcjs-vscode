@@ -4,7 +4,7 @@ This is an editor for the ABC music notation, powered by the [abcjs](https://abc
 
 It is an extension for Visual Studio Code and is available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=alensiljak.abcjs-vscode) or through the Extensions panel in VS Code.
 
-ABC notation - 🔤 - is known as the "Markdown for music". Learn more at https://abcnotation.com/.
+ABC notation - 🔤 - is known as the "Markdown for music". Learn more at the ABC Notation [homepage](https://abcnotation.com/).
 
 ## Features
 
@@ -83,6 +83,10 @@ The package manager is npm.
 - [Bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension)
 
 Note that the vscode engine version must start with a cared (^), otherwise it gets rejected by vscode on installation most of the time.
+
+# License
+
+See [[LICENSE]].
 
 # References
 
