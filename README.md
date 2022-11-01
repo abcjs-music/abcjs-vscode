@@ -86,7 +86,7 @@ Note that the vscode engine version must start with a cared (^), otherwise it ge
 
 # License
 
-See [[LICENSE]].
+See [license](LICENSE).
 
 # References
 
