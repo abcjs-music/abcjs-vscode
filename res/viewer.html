@@ -65,13 +65,7 @@
     <div class="top">
         <!-- <h1 class="title">${fileName}</h1> -->
         <fieldset class="options">
-            <legend>Options</legend>
-            <div>
-                <label>
-                    <input id="output-transposition" class="option" type="checkbox" checked>
-                    Show ABC
-                </label>
-            </div>
+            <legend>Tunes</legend>
             <label id="tune-selector"><span class="width-label">Tune:</span><select></select>
             </label>
         </fieldset>
@@ -99,7 +93,7 @@
         var abc = `{editorContent}`;
 
         function optionChanged() {
-            drawTune(abc)
+            drawTune(abc);
         }
 
         /**
@@ -108,21 +102,23 @@
         function drawTune(abcCode) {
             ABCJS.renderAbc('paper', abcCode, options);
 
-            var showSource = document.getElementById('output-transposition').checked
-            var source = document.getElementById("source")
+            const showSource = options.showTransposedSource;
+            const source = document.getElementById("source");
 
-            if (showSource && parseInt(options.visualTranspose, 10)) {
-                var tuneBook = new ABCJS.TuneBook(abcCode)
+            const transposition = parseInt(options.visualTranspose, 10)
 
-                var tune = tuneBook.tunes[options.startingTune]
+            if (showSource && transposition) {
+                const tuneBook = new ABCJS.TuneBook(abcCode);
+
+                const tune = tuneBook.tunes[options.startingTune];
                 if (tune) {
-                    var visualObj = ABCJS.renderAbc("*", tune.pure);
-                    source.classList.add("show")
-                    var output = ABCJS.strTranspose(tune.pure, visualObj, parseInt(options.visualTranspose, 10))
-                    source.innerText = output
+                    const visualObj = ABCJS.renderAbc("*", tune.pure);
+                    source.classList.add("show");
+                    const output = ABCJS.strTranspose(tune.pure, visualObj, transposition);
+                    source.innerText = output;
                 }
             } else {
-                source.classList.remove("show")
+                source.classList.remove("show");
             }
         }
 

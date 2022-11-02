@@ -121,13 +121,23 @@
               "Guitar"
             ],
             "markdownDescription": "Display a tablature-style staff. [Documentation](https://paulrosen.github.io/abcjs/visual/render-abc-options.html#tablatures)"
-          },
-          "abcjs-vscode.sheet.visualTranspose": {
+          }
+        }
+      },
+      {
+        "title": "Transposition",
+        "properties": {
+          "abcjs-vscode.transposition.visualTranspose": {
             "type": "integer",
             "default": 0,
             "minimum": -12,
             "maximum": 12,
             "description": "Tune transposition (in half-steps)"
+          },
+          "abcjs-vscode.transposition.showTransposedSource": {
+            "type": "boolean",
+            "default": false,
+            "description": "Show transposed ABC source code"
           }
         }
       }
