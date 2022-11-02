@@ -289,7 +289,8 @@ function readConfiguration(): object {
     // Sheet
     showDebug: configuration.get('sheet.showDebug') ? ['grid', 'box'] : [],
     jazzchords: configuration.get('sheet.jazzchords'),
-    tablature: tablature
+    tablature: tablature,
+    visualTranspose: configuration.get('sheet.visualTranspose')
   };
   return options;
 }

@@ -68,10 +68,6 @@
             <legend>Options</legend>
             <div>
                 <label>
-                    <span class="width-label">Transpose:</span>
-                    <input id="transpose" class="option" type="number" min="-12" max="12" value="0"> (half-steps)
-                </label>
-                <label>
                     <input id="output-transposition" class="option" type="checkbox" checked>
                     Show ABC
                 </label>
@@ -98,14 +94,11 @@
             format: {
                 gchordfont: '"itim-music,Itim" 20'
             },
-            visualTranspose: 0
         }
 
         var abc = `{editorContent}`;
 
         function optionChanged() {
-            options.visualTranspose = document.getElementById('transpose').value
-
             drawTune(abc)
         }
 

@@ -2,7 +2,7 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "ABC music notation editor, using abcjs library",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "publisher": "alensiljak",
   "author": {
     "name": "Alen Šiljak"
@@ -121,6 +121,13 @@
               "Guitar"
             ],
             "markdownDescription": "Display a tablature-style staff. [Documentation](https://paulrosen.github.io/abcjs/visual/render-abc-options.html#tablatures)"
+          },
+          "abcjs-vscode.sheet.visualTranspose": {
+            "type": "integer",
+            "default": 0,
+            "minimum": -12,
+            "maximum": 12,
+            "description": "Tune transposition (in half-steps)"
           }
         }
       }
