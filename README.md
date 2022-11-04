@@ -38,8 +38,8 @@ Press Ctrl+Shift+P and type "abcjs" to access the available commands.
 Available commands: 
 - `abcjs-vscode: Show Preview`
 - `abcjs-vscode: Print Preview`
-- `abcjs-vscode.export`
-- `abcjs-vscode.exportSvg`
+- `abcjs-vscode: Export Sheet to HTML`
+- `abcjs-vscode: Export Sheet as SVG`
 
 The Viewer works both with new text files in the editor and existing `.abc` files.
 
