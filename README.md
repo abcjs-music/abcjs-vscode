@@ -78,7 +78,7 @@ The package manager is npm.
 
 ## Publishing
 
-`npm run publish`
+`npm run deploy`
 
 - [Bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension)
 
