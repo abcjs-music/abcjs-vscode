@@ -191,7 +191,7 @@
     "comments": {
       "patterns": [
         {
-          "match": "%.*",
+          "match": "%[^%].*",
           "name": "comment.line.abc"
         }
       ]
