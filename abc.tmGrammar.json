@@ -29,13 +29,13 @@
     { "include": "#words" }
   ],
   "repository": {
-    "title": {
+    "composer": {
       "patterns": [
         {
-          "match": "^(T:)(.*)",
+          "match": "^(C:)(.*)",
           "captures": {
-            "1": { "name": "keyword.other.title.abc" },
-            "2": { "name": "string.value.title.abc" }
+            "1": { "name": "keyword.other.composer.abc" },
+            "2": { "name": "string.value.composer.abc" }
           }
         }
       ]
@@ -47,6 +47,17 @@
           "captures": {
             "1": { "name": "keyword.other.key.abc" },
             "2": { "name": "string.value.key.abc" }
+          }
+        }
+      ]
+    },
+    "length": {
+      "patterns": [
+        {
+          "match": "^(L:)(.*)",
+          "captures": {
+            "1": { "name": "keyword.other.length.abc" },
+            "2": { "name": "string.value.length.abc" }
           }
         }
       ]
@@ -68,13 +79,24 @@
         }
       ]
     },
-    "length": {
+    "notes": {
       "patterns": [
         {
-          "match": "^(L:)(.*)",
+          "match": "^(N:)(.*)",
           "captures": {
-            "1": { "name": "keyword.other.length.abc" },
-            "2": { "name": "string.value.length.abc" }
+            "1": { "name": "keyword.other.notes.abc" },
+            "2": { "name": "string.value.notes.abc" }
+          }
+        }
+      ]
+    },
+    "origin": {
+      "patterns": [
+        {
+          "match": "^(O:)(.*)",
+          "captures": {
+            "1": { "name": "keyword.other.origin.abc" },
+            "2": { "name": "string.value.origin.abc" }
           }
         }
       ]
@@ -90,24 +112,13 @@
         }
       ]
     },
-    "notes": {
+    "tempo": {
       "patterns": [
         {
-          "match": "^(N:)(.*)",
+          "match": "^(Q:)(.*)",
           "captures": {
-            "1": { "name": "keyword.other.notes.abc" },
-            "2": { "name": "string.value.notes.abc" }
-          }
-        }
-      ]
-    },
-    "redefine": {
-      "patterns": [
-        {
-          "match": "^(U:)(.*)",
-          "captures": {
-            "1": { "name": "keyword.other.redefine.abc" },
-            "2": { "name": "string.value.redefine.abc" }
+            "1": { "name": "keyword.other.tempo.abc" },
+            "2": { "name": "string.value.tempo.abc" }
           }
         }
       ]
@@ -134,13 +145,24 @@
         }
       ]
     },
-    "tempo": {
+    "title": {
       "patterns": [
         {
-          "match": "^(Q:)(.*)",
+          "match": "^(T:)(.*)",
           "captures": {
-            "1": { "name": "keyword.other.tempo.abc" },
-            "2": { "name": "string.value.tempo.abc" }
+            "1": { "name": "keyword.other.title.abc" },
+            "2": { "name": "string.value.title.abc" }
+          }
+        }
+      ]
+    },
+    "redefine": {
+      "patterns": [
+        {
+          "match": "^(U:)(.*)",
+          "captures": {
+            "1": { "name": "keyword.other.redefine.abc" },
+            "2": { "name": "string.value.redefine.abc" }
           }
         }
       ]
@@ -156,24 +178,13 @@
         }
       ]
     },
-    "composer": {
+    "transcription": {
       "patterns": [
         {
-          "match": "^(C:)(.*)",
+          "match": "^(Z:)(.*)",
           "captures": {
-            "1": { "name": "keyword.other.composer.abc" },
-            "2": { "name": "string.value.composer.abc" }
-          }
-        }
-      ]
-    },
-    "origin": {
-      "patterns": [
-        {
-          "match": "^(O:)(.*)",
-          "captures": {
-            "1": { "name": "keyword.other.origin.abc" },
-            "2": { "name": "string.value.origin.abc" }
+            "1": { "name": "keyword.other.transcription.abc" },
+            "2": { "name": "string.value.transcription.abc" }
           }
         }
       ]
