@@ -84,8 +84,8 @@
         {
           "match": "^(P:)(.*)",
           "captures": {
-            "1": { "name": "markup.underline.other.part.abc" },
-            "2": { "name": "markup.underline.other.part.abc" }
+            "1": { "name": "keyword.other.part.abc" },
+            "2": { "name": "string.value.part.abc" }
           }
         }
       ]
