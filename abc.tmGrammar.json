@@ -8,7 +8,6 @@
     { "include": "#annotations" },
     { "include": "#information" },
     { "include": "#bar" },
-    { "include": "#chords" },
     { "include": "#symbols" },
     { "include": "#accidentalsAndOctaves" },
     { "include": "#referencenumber" },
@@ -197,7 +196,7 @@
     "comments": {
       "patterns": [
         {
-          "match": "^%.*",
+          "match": "%.*",
           "name": "comment.line.abc"
         }
       ]
@@ -210,7 +209,7 @@
       },
       "while": "(?# include lines until one contains 'V:')^(?!V:\\d|X:)",
       "patterns": [
-        { "include": "#chords" },
+        { "include": "#annotations" },
         { "include": "#words" },
         { "include": "#bar" },
         { "include": "#ornaments" }
@@ -221,14 +220,6 @@
         {
           "match": "[\\^_=,']",
           "name": "string"
-        }
-      ]
-    },
-    "chords": {
-      "patterns": [
-        {
-          "match": "\"([^\".]*)\"",
-          "name": "entity.name.type.other.chords.abc"
         }
       ]
     },
@@ -276,10 +267,22 @@
         }
       ]
     },
+    "chord": {
+      "patterns": [
+        {
+          "match": "\\[",
+          "name": "string"
+        },
+        {
+          "match": "\\]",
+          "name": "string"
+        }
+      ]
+    },
     "voice": {
       "patterns": [
         {
-          "match": "^\\[V:.\\]",
+          "match": "^\\[V:[^\\]]*\\]",
           "name": "comment"
         }
       ]
