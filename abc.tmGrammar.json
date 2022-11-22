@@ -59,6 +59,12 @@
             "1": { "name": "keyword.other.meter.abc" },
             "2": { "name": "string.value.meter.abc" }
           }
+        }, {
+          "match": "(\\[M:)(.*?)\\]",
+          "captures": {
+            "1": { "name": "keyword.other.meter.abc" },
+            "2": { "name": "string.value.meter.abc" }
+          }
         }
       ]
     },
