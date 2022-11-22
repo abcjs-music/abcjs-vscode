@@ -107,7 +107,7 @@
           "match": "^(P:)(.*)",
           "captures": {
             "1": { "name": "keyword.other.part.abc" },
-            "2": { "name": "string.value.part.abc" }
+            "2": { "name": "markup.bold.other.part.abc" }
           }
         }
       ]

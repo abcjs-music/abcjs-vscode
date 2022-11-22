@@ -4,6 +4,10 @@ All notable changes to the "abcjs-editor" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+** 2.7
+
+Grammar additions and adjustments to improve code coloring.
+
 ** 2.6.0
 
 Grammar update. Thanks Antoine Balaine!
