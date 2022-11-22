@@ -1,0 +1,204 @@
+scopeName: source.abc
+patterns:
+  - include: "#ties"
+  - include: "#instructions"
+  - include: "#comments"
+  - include: "#voice"
+  - include: "#annotations"
+  - include: "#information"
+  - include: "#bar"
+  - include: "#symbols"
+  - include: "#accidentalsAndOctaves"
+  - include: "#referencenumber"
+  - include: "#title"
+  - include: "#key"
+  - include: "#meter"
+  - include: "#length"
+  - include: "#tempo"
+  - include: "#composer"
+  - include: "#rhythm"
+  - include: "#note-rhythm"
+  - include: "#origin"
+  - include: "#notes"
+  - include: "#part"
+  - include: "#redefine"
+  - include: "#rhythm"
+  - include: "#source"
+  - include: "#instructions"
+  - include: "#comments"
+  - include: "#voice-section"
+  - include: "#chords"
+  - include: "#words"
+  - include: "#bar"
+  - include: "#ornaments"
+repository:
+  title:
+    patterns:
+      - match: ^(T:)(.*)
+        captures:
+          "1":
+            name: keyword.other.title.abc
+          "2":
+            name: string.value.title.abc
+  key:
+    patterns:
+      - match: ^(K:)(.*)
+        captures:
+          "1":
+            name: keyword.other.key.abc
+          "2":
+            name: string.value.key.abc
+  meter:
+    patterns:
+      - match: ^(M:)(.*)
+        captures:
+          "1":
+            name: keyword.other.meter.abc
+          "2":
+            name: string.value.meter.abc
+  length:
+    patterns:
+      - match: ^(L:)(.*)
+        captures:
+          "1":
+            name: keyword.other.length.abc
+          "2":
+            name: string.value.length.abc
+  part:
+    patterns:
+      - match: ^(P:)(.*)
+        captures:
+          "1":
+            name: markup.underline.other.part.abc
+          "2":
+            name: markup.underline.other.part.abc
+  notes:
+    patterns:
+      - match: ^(N:)(.*)
+        captures:
+          "1":
+            name: keyword.other.notes.abc
+          "2":
+            name: string.value.notes.abc
+  redefine:
+    patterns:
+      - match: ^(U:)(.*)
+        captures:
+          "1":
+            name: keyword.other.redefine.abc
+          "2":
+            name: string.value.redefine.abc
+  rhythm:
+    patterns:
+      - match: ^(R:)(.*)
+        captures:
+          "1":
+            name: keyword.other.rhythm.abc
+          "2":
+            name: string.value.rhythm.abc
+  source:
+    patterns:
+      - match: ^(S:)(.*)
+        captures:
+          "1":
+            name: keyword.other.source.abc
+          "2":
+            name: string.value.source.abc
+  tempo:
+    patterns:
+      - match: ^(Q:)(.*)
+        captures:
+          "1":
+            name: keyword.other.tempo.abc
+          "2":
+            name: string.value.tempo.abc
+  referencenumber:
+    patterns:
+      - match: ^(X:)(.*)
+        captures:
+          "1":
+            name: keyword.other.referencenumber.abc
+          "2":
+            name: string.value.referencenumber.abc
+  composer:
+    patterns:
+      - match: ^(C:)(.*)
+        captures:
+          "1":
+            name: keyword.other.composer.abc
+          "2":
+            name: string.value.composer.abc
+  origin:
+    patterns:
+      - match: ^(O:)(.*)
+        captures:
+          "1":
+            name: keyword.other.origin.abc
+          "2":
+            name: string.value.origin.abc
+  instructions:
+    patterns:
+      - match: ^%%.*
+        name: keyword.other.instruction.abc
+  annotations:
+    patterns:
+      - match: '"([^".]*)"'
+        name: comment
+  comments:
+    patterns:
+      - match: "%.*"
+        name: comment.line.abc
+  voice-section:
+    name: abc.section.voice
+    begin: ^(V:\d)(.*)
+    beginCaptures:
+      "0":
+        name: keyword.other.region.voice.abc
+    while: (?# include lines until one contains 'V:')^(?!V:\d|X:)
+    patterns:
+      - include: "#annotations"
+      - include: "#words"
+      - include: "#bar"
+      - include: "#ornaments"
+  accidentalsAndOctaves:
+    patterns:
+      - match: "[\\^_=,']"
+        name: string
+  words:
+    patterns:
+      - match: ^([Ww]:)(.*)
+        name: keyword.other.words.abc
+  bar:
+    patterns:
+      - match: :?\|[:\]]?
+        name: keyword.other.bar.abc
+  ornaments:
+    patterns:
+      - match: \!([^\!.]*)\!
+        name: entity.name.type.other.ornaments.abc
+  symbols:
+    patterns:
+      - match: "!([^!.]*)!"
+        name: keyword.other.symbols.abc
+  ties:
+    patterns:
+      - match: \(
+        name: string
+      - match: \)
+        name: string
+  chord:
+    patterns:
+      - match: \[
+        name: string
+      - match: \]
+        name: string
+  voice:
+    patterns:
+      - match: ^\[V:[^\]]*\]
+        name: comment
+  note-rhythm:
+    patterns:
+      - match: "[><]"
+        name: string
+      - match: (?!^[a-gzA-GZ]([,']?)+)[/0-9]+
+        name: string
