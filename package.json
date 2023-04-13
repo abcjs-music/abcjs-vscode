@@ -2,7 +2,7 @@
   "name": "abcjs-vscode",
   "displayName": "abcjs vscode",
   "description": "ABC music notation editor, using abcjs library",
-  "version": "2.7.1",
+  "version": "2.8.0",
   "publisher": "alensiljak",
   "author": {
     "name": "Alen Šiljak"
@@ -14,16 +14,10 @@
     "url": "https://github.com/abcjs-music/abcjs-vscode"
   },
   "engines": {
-    "vscode": "^1.39.0"
+    "vscode": "^1.75.0"
   },
   "categories": [
     "Other"
-  ],
-  "activationEvents": [
-    "onCommand:abcjs-vscode.showPreview",
-    "onCommand:abcjs-vscode.exportHtml",
-    "onCommand:abcjs-vscode.exportSvg",
-    "onCommand:abcjs-vscode.printPreview"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -162,7 +156,7 @@
     "@types/glob": "8.1.0",
     "@types/mocha": "10.0.1",
     "@types/node": "16.0.0",
-    "@types/vscode": "1.39.0",
+    "@types/vscode": "1.75.0",
     "@typescript-eslint/eslint-plugin": "5.58.0",
     "@typescript-eslint/parser": "5.58.0",
     "@vscode/test-electron": "2.3.0",
