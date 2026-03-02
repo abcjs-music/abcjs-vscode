@@ -35,7 +35,8 @@ The Export SVG command will export the score sheet as SVG.
 
 Press Ctrl+Shift+P and type "abcjs" to access the available commands.
 
-Available commands: 
+Available commands:
+
 - `abcjs-vscode: Show Preview`
 - `abcjs-vscode: Print Preview`
 - `abcjs-vscode: Export Sheet to HTML`
@@ -72,23 +73,25 @@ See [CHANGELOG.org](CHANGELOG.org).
 
 --------------------------------------------------------------------------------------------------
 
-# Development
+## Development
 
 The package manager is npm.
 
-## Publishing
+### Publishing
 
-`npm run deploy`
+```sh
+npm run deploy
+```
 
 - [Bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension)
 
 Note that the vscode engine version must start with a cared (^), otherwise it gets rejected by vscode on installation most of the time.
 
-# License
+## License
 
 See [license](LICENSE).
 
-# References
+## References
 
 - https://github.com/softawaregmbh/vscode-abc/
 
