@@ -80,7 +80,11 @@ The package manager is npm.
 ### Publishing
 
 ```sh
-npm run deploy
+npm run compile
+#or
+npm run build
+
+npm run publish
 ```
 
 - [Bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension)
