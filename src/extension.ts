@@ -138,6 +138,10 @@ function initializePanel(context: vscode.ExtensionContext) {
       case 'click':
         // Select the character in the editor.
         select(message.startChar, message.endChar);
+
+      case 'textUpdate':
+        // Update the editor with new content.
+        updateEditorContent(message.content, message.startChar, message.endChar);
         break;
 
       case 'svgExport':
@@ -395,6 +399,29 @@ function getNormalizedEditorContent(editor?: vscode.TextEditor) {
   }
 
   return content;
+}
+
+/**
+ * Update the editor content between the given locations with new content.
+ * @param {string} newContent
+ * @param {Number} start
+ * @param {Number} end
+ */
+function updateEditorContent(newContent: string, start: number, end: number) {
+  const editor = getEditor();
+  if (!editor) {
+    return;
+  }
+
+  // Unescape the \\
+  const unescapedContent = newContent.replaceAll('\\\\', '\\');
+  const startPos = editor.document.positionAt(start);
+  const endPos = editor.document.positionAt(end);
+
+  const fullRange = new vscode.Range(startPos, endPos);
+  editor.edit((editBuilder) => {
+    editBuilder.replace(fullRange, unescapedContent);
+  });
 }
 
 function createPanel(context: vscode.ExtensionContext): WebviewPanel {
