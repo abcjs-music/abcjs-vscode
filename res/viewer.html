@@ -93,11 +93,25 @@
             drawTune(abc);
         }
 
+
+        function playNote(abcElem) {
+            var lastClicked = abcElem.midiPitches;
+            if (!lastClicked)
+                return;
+
+            ABCJS.synth.playEvent(
+                lastClicked,
+                abcElem.midiGraceNotePitches,
+                abcElem.duration * 1000
+            )
+        }
+
         /**
          * Run abcjs, render the score from ABC notation.
          */
         function drawTune(abcCode) {
-            ABCJS.renderAbc('paper', abcCode, options);
+            const visualObj = ABCJS.renderAbc('paper', abcCode, options);
+            visualObj[0].setUpAudio()
 
             const showSource = options.showTransposedSource;
             const source = document.getElementById("source");
@@ -157,6 +171,8 @@
         }
 
         function clickListener(abcElem, tuneNumber, classes) {
+            playNote(abcElem);
+
             vscode.postMessage({
                 name: 'click',
                 //abcElem: abcElem,
