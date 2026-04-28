@@ -134,6 +134,64 @@
             "description": "Show transposed ABC source code"
           }
         }
+      },
+      {
+        "title": "Drag To Edit",
+        "properties": {
+          "abcjs-vscode.dragToEdit.enabled": {
+            "type": "boolean",
+            "default": false,
+            "scope": "resource",
+            "description": "Enable editing notes by dragging them in the preview."
+          },
+          "abcjs-vscode.dragToEdit.selectionColor": {
+            "type": "string",
+            "default": "green",
+            "scope": "resource",
+            "description": "CSS color used for selected notation elements."
+          },
+          "abcjs-vscode.dragToEdit.dragColor": {
+            "type": "string",
+            "default": "blue",
+            "scope": "resource",
+            "description": "CSS color used while dragging notation elements."
+          },
+          "abcjs-vscode.dragToEdit.selectTypes": {
+            "type": "array",
+            "default": [
+              "note"
+            ],
+            "scope": "resource",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "author",
+                "bar",
+                "brace",
+                "clef",
+                "composer",
+                "dynamicDecoration",
+                "ending",
+                "extraText",
+                "freeText",
+                "keySignature",
+                "note",
+                "part",
+                "partOrder",
+                "rhythm",
+                "slur",
+                "subtitle",
+                "tempo",
+                "timeSignature",
+                "title",
+                "unalignedWords",
+                "voiceName"
+              ]
+            },
+            "description": "Notation element types that can be selected in the preview."
+          }
+        }
       }
     ]
   },
