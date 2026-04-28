@@ -134,6 +134,16 @@
             "description": "Show transposed ABC source code"
           }
         }
+      },
+      {
+        "title": "Play Selected Notes",
+          "properties": {
+            "abcjs-vscode.playSelectedNotes.enable": {
+              "type": "boolean",
+              "default": false,
+              "description": "Play the selected note"
+            }
+          }
       }
     ]
   },

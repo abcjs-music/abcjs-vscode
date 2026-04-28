@@ -78,7 +78,8 @@
             vscode = acquireVsCodeApi();
         }
 
-        var options = {
+        var extensionOptions = JSON.parse(`{extensionConfiguration}`);
+        var defaultOptions = {
             startingTune: 0,
             clickListener: clickListener,
             responsive: "resize",
@@ -86,6 +87,7 @@
                 gchordfont: '"itim-music,Itim" 20'
             },
         }
+        var options = Object.assign({}, defaultOptions, extensionOptions);
 
         var abc = `{editorContent}`;
 
@@ -99,11 +101,13 @@
             if (!lastClicked)
                 return;
 
-            ABCJS.synth.playEvent(
-                lastClicked,
-                abcElem.midiGraceNotePitches,
-                abcElem.duration * 1000
-            )
+            if (options.playSelectedNotes) {
+                ABCJS.synth.playEvent(
+                    lastClicked,
+                    abcElem.midiGraceNotePitches,
+                    abcElem.duration * 1000
+                )
+            }
         }
 
         /**
