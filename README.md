@@ -52,6 +52,13 @@ The abcjs library is currently loaded from CDN and not packaged with the extensi
 
 In VSCode Settings, look for `abcjs vscode` configuration section. Editing the settings will apply them immediately to the Viewer. For convenience, you can arrange the window layout and keep the Settings window open in order to apply the settings to the current sheet preview.
 
+Drag-to-edit can be configured with:
+
+- `abcjs-vscode.dragToEdit.enabled`
+- `abcjs-vscode.dragToEdit.selectionColor`
+- `abcjs-vscode.dragToEdit.dragColor`
+- `abcjs-vscode.dragToEdit.selectTypes`
+
 <!--
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
