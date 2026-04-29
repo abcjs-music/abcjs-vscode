@@ -292,7 +292,11 @@ function readConfiguration(): object {
     tablature: tablature,
     // Transposition
     visualTranspose: configuration.get('transposition.visualTranspose'),
-    showTransposedSource: configuration.get('transposition.showTransposedSource')
+    showTransposedSource: configuration.get('transposition.showTransposedSource'),
+    // Audio
+    audioEnabled: configuration.get('audio.enabled'),
+    audioCursorColor: configuration.get('audio.cursorColor'),
+    audioHighlightColor: configuration.get('audio.highlightColor')
   };
   return options;
 }
@@ -343,6 +347,7 @@ async function getHtml(context: vscode.ExtensionContext, fileName: string) {
   html = html.replace('{editorContent}', editorContent);
   html = html.replace('${fileName}', fileName);
   html = html.replace('${title}', fileName);
+  html = html.replace('{extensionConfiguration}', JSON.stringify(readConfiguration()));
 
   return html;
 }

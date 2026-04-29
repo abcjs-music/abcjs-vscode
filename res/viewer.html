@@ -18,6 +18,11 @@
             font-style: normal;
         }
 
+        :root {
+            --abcjs-highlight-color: #0a9ecc;
+            --abcjs-cursor-color: #ff0000;
+        }
+
         h1 {
             margin: 0;
             padding: 0;
@@ -50,11 +55,11 @@
         }
 
         .highlight {
-            fill: #0a9ecc;
+            fill: var(--abcjs-highlight-color);
         }
 
         .abcjs-cursor {
-            stroke: red;
+            stroke: var(--abcjs-cursor-color);
         }
 
         #source {
@@ -88,7 +93,8 @@
             vscode = acquireVsCodeApi();
         }
 
-        var options = {
+        var extensionOptions = JSON.parse(`{extensionConfiguration}`);
+        var defaultOptions = {
             startingTune: 0,
             clickListener: clickListener,
             responsive: "resize",
@@ -96,8 +102,17 @@
                 gchordfont: '"itim-music,Itim" 20'
             },
         }
+        var options = Object.assign({}, defaultOptions, extensionOptions);
 
         var abc = `{editorContent}`;
+
+        function applyAudioOptions() {
+            if (options.audioCursorColor)
+                document.documentElement.style.setProperty("--abcjs-cursor-color", options.audioCursorColor);
+            if (options.audioHighlightColor)
+                document.documentElement.style.setProperty("--abcjs-highlight-color", options.audioHighlightColor);
+            document.getElementById("audio").style.display = options.audioEnabled === false ? "none" : "";
+        }
 
         function optionChanged() {
             reload();
@@ -137,7 +152,7 @@
             }
             options.startingTune = select.value
             drawTune(abc)
-            if (synthControl && visualObj) {
+            if (options.audioEnabled !== false && synthControl && visualObj) {
                 synthControl.setTune(visualObj, userAction)
             }
         }
@@ -250,6 +265,9 @@
         var synthControl;
 
         function createSynthControl() {
+            if (options.audioEnabled === false) {
+                return
+            }
             if (!ABCJS.synth.supportsAudio()) {
                 return
             }
@@ -268,6 +286,7 @@
         }
 
         function load() {
+            applyAudioOptions();
             createSynthControl();
             setTune(false);
         }

@@ -134,6 +134,29 @@
             "description": "Show transposed ABC source code"
           }
         }
+      },
+      {
+        "title": "Audio",
+        "properties": {
+          "abcjs-vscode.audio.enabled": {
+            "type": "boolean",
+            "default": true,
+            "scope": "resource",
+            "description": "Show audio controls and enable synthesized playback."
+          },
+          "abcjs-vscode.audio.cursorColor": {
+            "type": "string",
+            "default": "#ff0000",
+            "scope": "resource",
+            "description": "Playback cursor color."
+          },
+          "abcjs-vscode.audio.highlightColor": {
+            "type": "string",
+            "default": "#0a9ecc",
+            "scope": "resource",
+            "description": "Playback note highlight color."
+          }
+        }
       }
     ]
   },
