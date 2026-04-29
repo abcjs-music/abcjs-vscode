@@ -96,7 +96,7 @@
         }
 
 
-        function playNote(abcElem) {
+        function playNote(abcElem, millisecondsPerMeasure) {
             var lastClicked = abcElem.midiPitches;
             if (!lastClicked)
                 return;
@@ -105,7 +105,7 @@
                 ABCJS.synth.playEvent(
                     lastClicked,
                     abcElem.midiGraceNotePitches,
-                    abcElem.duration * 1000
+                    millisecondsPerMeasure
                 )
             }
         }
@@ -113,9 +113,10 @@
         /**
          * Run abcjs, render the score from ABC notation.
          */
+        var visualObj
         function drawTune(abcCode) {
-            const visualObj = ABCJS.renderAbc('paper', abcCode, options);
-            visualObj[0].setUpAudio()
+            visualObj = ABCJS.renderAbc('paper', abcCode, options)[0];
+            visualObj.setUpAudio()
 
             const showSource = options.showTransposedSource;
             const source = document.getElementById("source");
@@ -175,7 +176,7 @@
         }
 
         function clickListener(abcElem, tuneNumber, classes) {
-            playNote(abcElem);
+            playNote(abcElem, visualObj.millisecondsPerMeasure());
 
             vscode.postMessage({
                 name: 'click',
