@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ABC Preview</title>
-    <link rel="stylesheet" type="text/css" href="https://examples.abcjs.net/abcjs-audio.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/abcjs@6.6.0/abcjs-audio.css">
     <style>
         @import url(https://fonts.googleapis.com/css?family=Itim);
 
@@ -124,7 +124,7 @@
         var visualObj
         function drawTune(abcCode) {
             visualObj = ABCJS.renderAbc('paper', abcCode, options)[0];
-            visualObj.setUpAudio()
+            if (options.audioEnabled !== false) visualObj.setUpAudio();
 
             const showSource = options.showTransposedSource;
             const source = document.getElementById("source");
@@ -148,6 +148,7 @@
 
         function setTune(userAction) {
             if (synthControl) {
+                synthControl.pause();
                 synthControl.disable(true);
             }
             options.startingTune = select.value
@@ -304,7 +305,7 @@
                     break;
 
                 case 'configurationChange':
-                    options = message.content
+                    options = Object.assign({}, defaultOptions, message.content);
                     reload();
                     break;
 

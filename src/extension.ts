@@ -347,7 +347,8 @@ async function getHtml(context: vscode.ExtensionContext, fileName: string) {
   html = html.replace('{editorContent}', editorContent);
   html = html.replace('${fileName}', fileName);
   html = html.replace('${title}', fileName);
-  html = html.replace('{extensionConfiguration}', JSON.stringify(readConfiguration()));
+  const configJson = JSON.stringify(readConfiguration()).replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
+  html = html.replace('{extensionConfiguration}', configJson);
 
   return html;
 }
