@@ -293,12 +293,11 @@ function readConfiguration(): object {
     // Transposition
     visualTranspose: configuration.get('transposition.visualTranspose'),
     showTransposedSource: configuration.get('transposition.showTransposedSource'),
-    // Play Selected Notes
-    playSelectedNotes: configuration.get('playSelectedNotes.enable'),
     // Audio
     audioEnabled: configuration.get('audio.enabled'),
     audioCursorColor: configuration.get('audio.cursorColor'),
-    audioHighlightColor: configuration.get('audio.highlightColor')
+    audioHighlightColor: configuration.get('audio.highlightColor'),
+    playSelectedNotes: configuration.get('audio.playSelectedNotes'),
   };
   return options;
 }
