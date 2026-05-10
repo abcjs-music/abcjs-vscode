@@ -295,6 +295,10 @@ function readConfiguration(): object {
     showTransposedSource: configuration.get('transposition.showTransposedSource'),
     // Play Selected Notes
     playSelectedNotes: configuration.get('playSelectedNotes.enable'),
+    // Audio
+    audioEnabled: configuration.get('audio.enabled'),
+    audioCursorColor: configuration.get('audio.cursorColor'),
+    audioHighlightColor: configuration.get('audio.highlightColor')
   };
   return options;
 }
@@ -345,7 +349,8 @@ async function getHtml(context: vscode.ExtensionContext, fileName: string) {
   html = html.replace('{editorContent}', editorContent);
   html = html.replace('${fileName}', fileName);
   html = html.replace('${title}', fileName);
-  html = html.replace('{extensionConfiguration}', JSON.stringify(readConfiguration()));
+  const configJson = JSON.stringify(readConfiguration()).replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
+  html = html.replace('{extensionConfiguration}', configJson);
 
   return html;
 }
