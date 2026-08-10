@@ -79,12 +79,24 @@ The package manager is npm.
 
 ### Publishing
 
+#### GUI
+
+```sh
+npx vsce package
+```
+
+Then, from the [publishers page](https://marketplace.visualstudio.com/manage/publishers/alensiljak), upload the .vsix package.
+
+#### CLI
+
+Requires a personal access token (PAT). These are getting deprecated.
+
 ```sh
 npm run compile
 #or
 npm run build
 
-npm run publish
+~~npm run publish~~
 ```
 
 - [Bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension)
