@@ -208,7 +208,9 @@ function exportSvg(svg: string) {
 function getCurrentEditorContent(): string {
   const editor = getEditor();
 
-  const editorContent = getNormalizedEditorContent(editor);
+  // This content is embedded into a JS template literal in the webview HTML,
+  // so backslashes must be doubled to survive that re-parsing.
+  const editorContent = getNormalizedEditorContent(editor, true);
   return editorContent;
 }
 
@@ -386,15 +388,19 @@ function select(start: number, end: number) {
   editor.revealRange(editor.selection);
 }
 
-function getNormalizedEditorContent(editor?: vscode.TextEditor) {
+function getNormalizedEditorContent(editor?: vscode.TextEditor, escapeBackslash = false) {
   if (!editor) {
     return '';
   }
 
   let content = editor.document.getText();
 
-  // escape the \
-  content = content.replaceAll('\\', '\\\\');
+  // Only needed when the content is embedded into a JS template literal
+  // (see getCurrentEditorContent). The postMessage path uses structured
+  // cloning, so doubling here would leak literal backslashes into abcjs.
+  if (escapeBackslash) {
+    content = content.replaceAll('\\', '\\\\');
+  }
 
   if (editor.document.eol === vscode.EndOfLine.CRLF) {
     content = content.replace(/\r\n/g, '\n');

@@ -200,7 +200,7 @@
     "annotations": {
       "patterns": [
         {
-          "match": "\"([^\".]*)\"",
+          "match": "\"(?:\\\\.|[^\"\\\\])*\"",
           "name": "comment"
         }
       ]

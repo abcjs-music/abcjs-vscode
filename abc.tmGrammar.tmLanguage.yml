@@ -142,7 +142,7 @@ repository:
         name: keyword.other.instruction.abc
   annotations:
     patterns:
-      - match: '"([^".]*)"'
+      - match: '"(?:\\.|[^"\\])*"'
         name: comment
   comments:
     patterns:
