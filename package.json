@@ -155,6 +155,12 @@
             "default": "#0a9ecc",
             "scope": "resource",
             "description": "Playback note highlight color."
+          },
+          "abcjs-vscode.audio.playSelectedNotes": {
+            "type": "boolean",
+            "default": false,
+            "scope": "resource",
+            "description": "Play the selected note"
           }
         }
       }

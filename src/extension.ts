@@ -298,7 +298,8 @@ function readConfiguration(): object {
     // Audio
     audioEnabled: configuration.get('audio.enabled'),
     audioCursorColor: configuration.get('audio.cursorColor'),
-    audioHighlightColor: configuration.get('audio.highlightColor')
+    audioHighlightColor: configuration.get('audio.highlightColor'),
+    playSelectedNotes: configuration.get('audio.playSelectedNotes'),
   };
   return options;
 }
