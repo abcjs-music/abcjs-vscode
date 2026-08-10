@@ -188,5 +188,10 @@
     "glob": "^13.0.3",
     "mocha": "^11.0.0",
     "typescript": "^6.0.0"
+  },
+  "allowScripts": {
+    "@vscode/vsce-sign@2.0.9": true,
+    "esbuild@0.28.0": true,
+    "keytar@7.9.0": true
   }
 }
