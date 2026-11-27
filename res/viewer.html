@@ -194,12 +194,66 @@
             }
         }
 
-        function clickListener(abcElem, tuneNumber, classes) {
+        const allPitches = [
+            'C,,,,', 'D,,,,', 'E,,,,', 'F,,,,', 'G,,,,', 'A,,,,', 'B,,,,',
+            'C,,,', 'D,,,', 'E,,,', 'F,,,', 'G,,,', 'A,,,', 'B,,,',
+            'C,,', 'D,,', 'E,,', 'F,,', 'G,,', 'A,,', 'B,,',
+            'C,', 'D,', 'E,', 'F,', 'G,', 'A,', 'B,',
+            'C', 'D', 'E', 'F', 'G', 'A', 'B',
+            'c', 'd', 'e', 'f', 'g', 'a', 'b',
+            "c'", "d'", "e'", "f'", "g'", "a'", "b'",
+            "c''", "d''", "e''", "f''", "g''", "a''", "b''",
+            "c'''", "d'''", "e'''", "f'''", "g'''", "a'''", "b'''",
+            "c''''", "d''''", "e''''", "f''''", "g''''", "a''''", "b''''"
+        ];
+
+        function moveNote(note, step) {
+            var x = allPitches.indexOf(note);
+            if (x >= 0)
+                return allPitches[x - step];
+            return note;
+        }
+
+        function tokenize(str) {
+            var arr = str.split(/(!.+?!|".+?")/);
+            var output = [];
+            for (var i = 0; i < arr.length; i++) {
+                var token = arr[i];
+                if (token.length > 0) {
+                    if (token[0] !== '"' && token[0] !== '!') {
+                        var arr2 = arr[i].split(/([A-Ga-g][,']*)/);
+                        output = output.concat(arr2);
+                    } else
+                        output.push(token);
+                }
+            }
+            return output;
+        }
+
+        function clickListener(abcElem, tuneNumber, classes, analysis, drag) {
+            const startChar = abcElem.startChar
+            const endChar = abcElem.endChar
+            var originalText = abc.substring(startChar, endChar);
+            if (abcElem.pitches && drag && drag.step && startChar >= 0 && endChar >= 0) {
+                var arr = tokenize(originalText);
+                for (var i = 0; i < arr.length; i++) {
+                    arr[i] = moveNote(arr[i], drag.step);
+                }
+                var newText = arr.join("");
+
+                vscode.postMessage({
+                    name: 'textUpdate',
+                    content: newText,
+                    startChar: startChar,
+                    endChar: endChar
+                });
+            }
+
             vscode.postMessage({
                 name: 'click',
                 //abcElem: abcElem,
-                startChar: abcElem.startChar,
-                endChar: abcElem.endChar,
+                startChar: startChar,
+                endChar: endChar,
                 tuneNumber: tuneNumber,
                 classes: classes
             })
