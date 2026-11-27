@@ -24,7 +24,8 @@
     "commands": [
       {
         "command": "abcjs-vscode.showPreview",
-        "title": "abcjs-vscode: Show Preview"
+        "title": "abcjs-vscode: Show Preview",
+        "icon": "$(open-preview)"
       },
       {
         "command": "abcjs-vscode.exportHtml",
@@ -39,6 +40,15 @@
         "title": "abcjs-vscode: Print Preview"
       }
     ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "abcjs-vscode.showPreview",
+          "group": "navigation",
+          "when": "resourceLangId == abc"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "abc",
