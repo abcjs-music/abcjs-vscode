@@ -118,6 +118,21 @@
             reload();
         }
 
+
+        function playNote(abcElem, millisecondsPerMeasure) {
+            var lastClicked = abcElem.midiPitches;
+            if (!lastClicked)
+                return;
+
+            if (options.playSelectedNotes) {
+                ABCJS.synth.playEvent(
+                    lastClicked,
+                    abcElem.midiGraceNotePitches,
+                    millisecondsPerMeasure
+                )
+            }
+        }
+
         /**
          * Run abcjs, render the score from ABC notation.
          */
@@ -195,6 +210,8 @@
         }
 
         function clickListener(abcElem, tuneNumber, classes) {
+            playNote(abcElem, visualObj.millisecondsPerMeasure());
+
             vscode.postMessage({
                 name: 'click',
                 //abcElem: abcElem,
